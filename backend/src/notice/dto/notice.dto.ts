@@ -22,3 +22,24 @@ export class CreateNoticeDto {
   })
   content: string;
 }
+
+export class updateNoticeDto extends CreateNoticeDto {
+  @IsNotEmpty({
+    message: 'id不可为空',
+  })
+  id: string;
+}
+
+export class GetMyNoticeListDto {
+  @IsNotEmpty({
+    message: '分页必填',
+  })
+  page: string;
+
+  @IsNotEmpty({
+    message: '每页数量必填',
+  })
+  pageSize: string;
+
+  keyword: string;
+}
