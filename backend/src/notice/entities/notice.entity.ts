@@ -27,7 +27,7 @@ export class NoticeList {
 
   @Column({
     length: 50,
-    comment: '类型 1.跑马灯 2.modal躺床 3.message',
+    comment: '类型 1.跑马灯 2.modal 3.message',
   })
   notice_type: string;
 
