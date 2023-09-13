@@ -5,6 +5,8 @@ import { NoticeModule } from './notice/notice.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { NoticeList } from './notice/entities/notice.entity';
 import { NoticeType } from './notice/entities/notice_type.entity';
+import { Service } from './service/entities/service.entity';
+import { ServiceModule } from './service/service.module';
 @Module({
   imports: [
     NoticeModule,
@@ -17,13 +19,14 @@ import { NoticeType } from './notice/entities/notice_type.entity';
       database: 'notice',
       synchronize: true,
       logging: true,
-      entities: [NoticeList, NoticeType],
+      entities: [NoticeList, NoticeType, Service],
       poolSize: 10,
       connectorPackage: 'mysql2',
       extra: {
         authPlugin: 'sha256_password',
       },
     }),
+    ServiceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

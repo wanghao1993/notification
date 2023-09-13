@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Param,
   Post,
   Put,
   Query,
@@ -14,28 +13,28 @@ import {
   updateNoticeDto,
 } from './dto/notice.dto';
 import { NoticeService } from './notice.service';
+import { MyValidatePipe } from 'src/my-validate-pipe/my-validate.pipe';
 
 @Controller('notice')
 export class NoticeController {
   constructor(private readonly noticeService: NoticeService) {}
   @Post('create')
-  create(@Body() createNoticeBody: CreateNoticeDto) {
+  create(@Body(MyValidatePipe) createNoticeBody: CreateNoticeDto) {
     return this.noticeService.createNotice(createNoticeBody);
   }
 
   @Get('list')
-  list(@Query() querys: GetMyNoticeListDto) {
+  list(@Query(MyValidatePipe) querys: GetMyNoticeListDto) {
     return this.noticeService.getNoticeList(querys);
   }
 
   @Put('update_notice')
-  updateNotice(@Body() updateNoticeData: updateNoticeDto) {
+  updateNotice(@Body(MyValidatePipe) updateNoticeData: updateNoticeDto) {
     return this.noticeService.updateNotice(updateNoticeData);
   }
 
   @Delete('delete')
   delete(@Query('id') id: string) {
-    console.log(id);
     return this.noticeService.deleteNotice(+id);
   }
 }
