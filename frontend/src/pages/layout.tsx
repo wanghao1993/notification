@@ -2,7 +2,7 @@ import React, { useState, ReactNode, useRef, useEffect } from 'react';
 import { Layout, Menu, Breadcrumb, Spin } from '@arco-design/web-react';
 import cs from 'classnames';
 import {
-  IconDashboard,
+  IconNotification,
   IconTag,
   IconMenuFold,
   IconMenuUnfold,
@@ -28,10 +28,10 @@ const Content = Layout.Content;
 
 function getIconFromKey(key) {
   switch (key) {
-    case 'dashboard':
-      return <IconDashboard className={styles.icon} />;
     case 'example':
       return <IconTag className={styles.icon} />;
+    case 'notice':
+      return <IconNotification className={styles.icon} />;
     default:
       return <div className={styles['icon-empty']} />;
   }
