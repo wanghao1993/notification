@@ -32,8 +32,11 @@ function Notice() {
     getNoticeListApi({
       page: 1,
       pageSize: 50,
-    }).then((res) => {});
+    }).then((res) => {
+      console.log(res);
+    });
   };
+
   useEffect(() => {
     fetchData();
   }, []);
