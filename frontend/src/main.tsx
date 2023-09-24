@@ -16,11 +16,12 @@ import checkLogin from './utils/checkLogin';
 import changeTheme from './utils/changeTheme';
 import useStorage from './utils/useStorage';
 import './mock';
+import 'virtual:uno.css';
 
 const store = createStore(rootReducer);
 
 function Index() {
-  const [lang, setLang] = useStorage('arco-lang', 'en-US');
+  const [lang, setLang] = useStorage('arco-lang', 'zh-CN');
   const [theme, setTheme] = useStorage('arco-theme', 'light');
 
   function getArcoLocale() {

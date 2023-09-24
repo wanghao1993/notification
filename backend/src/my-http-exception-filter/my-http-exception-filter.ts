@@ -1,29 +1,34 @@
-import { ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
-import { HttpException, InternalServerErrorException } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpException,
+  HttpStatus,
+  Logger,
+} from '@nestjs/common';
+import { ResCode } from 'src/enum/responseCode';
 
-@Catch()
+@Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
-    const { status, json } = this.prepareException(exception);
+    const request = ctx.getRequest();
 
-    response.status(status).send(json);
-  }
-
-  prepareException(exc: any): { status: number; json: object } {
-    if (process.env.NODE_ENV !== 'test') {
-      console.log(exc);
-    }
-
-    const error =
-      exc instanceof HttpException
-        ? exc
-        : new InternalServerErrorException(exc.message);
-    const status = error.getStatus();
-    const response = error.getResponse();
-    const json = typeof response === 'string' ? { error: response } : response;
-
-    return { status, json };
+    const message = exception.message;
+    Logger.log('错误提示', message);
+    const errorResponse = {
+      message,
+      code: ResCode.error, // 自定义code
+      url: request.originalUrl, // 错误的url地址
+    };
+    const status =
+      exception instanceof HttpException
+        ? exception.getStatus()
+        : HttpStatus.INTERNAL_SERVER_ERROR;
+    // 设置返回的状态码、请求头、发送错误信息
+    response.status(status);
+    response.header('Content-Type', 'application/json; charset=utf-8');
+    response.send(errorResponse);
   }
 }

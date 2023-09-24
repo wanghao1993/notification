@@ -26,6 +26,11 @@ export class NoticeList {
   content: string;
 
   @Column({
+    comment: '创建人',
+  })
+  creator: string;
+
+  @Column({
     length: 50,
     comment: '类型 1.跑马灯 2.modal 3.message',
   })

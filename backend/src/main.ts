@@ -2,16 +2,18 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './my-http-exception-filter/my-http-exception-filter';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { TransformInterceptor } from './transform/transform.interceptor';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    origin: 'http://localhost:3001',
+    origin: 'http://localhost:3003',
     credentials: true,
     optionsSuccessStatus: 200,
   });
   app.useGlobalFilters(new HttpExceptionFilter());
 
+  app.useGlobalInterceptors(new TransformInterceptor());
   const options = new DocumentBuilder()
     .setTitle('通知系统')
     .setDescription('自定通知系统后台')

@@ -25,3 +25,13 @@ declare module '*.png' {
   const value: string;
   export default value;
 }
+
+
+declare global {
+   interface ListResType<T> {
+    total_count: number;
+    list: T[]
+   }
+}
+
+export {}

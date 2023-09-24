@@ -3,10 +3,10 @@ import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
 import { Layout, Menu, Breadcrumb, Spin } from '@arco-design/web-react';
 import cs from 'classnames';
 import {
-  IconDashboard,
   IconTag,
   IconMenuFold,
   IconMenuUnfold,
+  IconHome,
 } from '@arco-design/web-react/icon';
 import { useSelector } from 'react-redux';
 import qs from 'query-string';
@@ -29,10 +29,8 @@ const Content = Layout.Content;
 
 function getIconFromKey(key) {
   switch (key) {
-    case 'dashboard':
-      return <IconDashboard className={styles.icon} />;
-    case 'example':
-      return <IconTag className={styles.icon} />;
+    case 'home':
+      return <IconHome className={styles.icon} />;
     default:
       return <div className={styles['icon-empty']} />;
   }
@@ -66,6 +64,7 @@ function PageLayout() {
   );
 
   const [routes, defaultRoute] = useRoute(userInfo?.permissions);
+
   const defaultSelectedKeys = [currentComponent || defaultRoute];
   const paths = (currentComponent || defaultRoute).split('/');
   const defaultOpenKeys = paths.slice(0, paths.length - 1);
@@ -90,6 +89,7 @@ function PageLayout() {
 
   const flattenRoutes = useMemo(() => getFlattenRoutes(routes) || [], [routes]);
 
+  console.log(flattenRoutes)
   function onClickMenuItem(key) {
     const currentRoute = flattenRoutes.find((r) => r.key === key);
     const component = currentRoute.component;
@@ -247,7 +247,7 @@ function PageLayout() {
                     );
                   })}
                   <Route exact path="/">
-                    <Redirect to={`/${defaultRoute}`} />
+                    <Redirect to='/home' />
                   </Route>
                   <Route
                     path="*"

@@ -1,7 +1,5 @@
 const i18n = {
   'en-US': {
-    'menu.dashboard': 'Dashboard',
-    'menu.dashboard.workplace': 'Workplace',
     'menu.user.info': 'User Info',
     'menu.user.setting': 'User Setting',
     'menu.user.switchRoles': 'Switch Roles',
@@ -36,10 +34,9 @@ const i18n = {
     'message.empty.tips': 'No Content',
     'message.lang.tips': 'Language switch to ',
     'navbar.search.placeholder': 'Please search',
+    'home': 'Home'
   },
   'zh-CN': {
-    'menu.dashboard': '仪表盘',
-    'menu.dashboard.workplace': '工作台',
     'menu.user.info': '用户信息',
     'menu.user.setting': '用户设置',
     'menu.user.switchRoles': '切换角色',
@@ -74,6 +71,7 @@ const i18n = {
     'message.empty.tips': '暂无内容',
     'message.lang.tips': '语言切换至 ',
     'navbar.search.placeholder': '输入内容查询',
+    'Home': '首页'
   },
 };
 

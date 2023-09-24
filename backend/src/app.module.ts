@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { NoticeModule } from './notice/notice.module';
@@ -7,6 +7,7 @@ import { NoticeList } from './notice/entities/notice.entity';
 import { NoticeType } from './notice/entities/notice_type.entity';
 import { Service } from './service/entities/service.entity';
 import { ServiceModule } from './service/service.module';
+import { ResponseMiddleware } from './response/response.middleware';
 @Module({
   imports: [
     NoticeModule,
@@ -29,6 +30,10 @@ import { ServiceModule } from './service/service.module';
     ServiceModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ResponseMiddleware],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(ResponseMiddleware).forRoutes('*');
+  }
+}
