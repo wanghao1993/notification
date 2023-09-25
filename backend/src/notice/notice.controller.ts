@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -34,7 +36,17 @@ export class NoticeController {
   }
 
   @Delete('delete')
-  delete(@Query('id') id: string) {
-    return this.noticeService.deleteNotice(+id);
+  delete(@Query('id', ParseIntPipe) id: number) {
+    return this.noticeService.deleteNotice(id);
+  }
+
+  @Get('notice_type_list')
+  getNoticeTypeList() {
+    return this.noticeService.getNoticeTypeList();
+  }
+
+  @Get(':id')
+  getNoticeById(@Param('id', ParseIntPipe) id: number) {
+    return this.noticeService.getNoticeById(id);
   }
 }

@@ -54,7 +54,7 @@ function Home() {
       <Table rowKey="id" columns={columns} data={dataSource} />
 
       {visible ? (
-        <CreateNoticeModal visible={visible} setVisible={setVisible} />
+        <CreateNoticeModal visible={visible} setVisible={setVisible} id={1} />
       ) : null}
     </Card>
   );

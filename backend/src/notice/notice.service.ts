@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -93,11 +93,26 @@ export class NoticeService {
     }
   }
 
+  // 获取通知类型
   async getNoticeTypeList() {
     const res = await this.noticeTypeRepository.find();
 
     return {
       list: res,
     };
+  }
+
+  // 通过id获取通知
+
+  async getNoticeById(id: number) {
+    const res = await this.noticeRepository.findOneBy({
+      id,
+    });
+
+    if (res) {
+      return res;
+    } else {
+      throw new HttpException('id不正确', 500);
+    }
   }
 }

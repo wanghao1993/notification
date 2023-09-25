@@ -26,12 +26,11 @@ declare module '*.png' {
   export default value;
 }
 
-
 declare global {
-   interface ListResType<T> {
-    total_count: number;
-    list: T[]
-   }
+  interface ListResType<T> {
+    total_count?: number;
+    list: T[];
+  }
 }
 
-export {}
+export {};
