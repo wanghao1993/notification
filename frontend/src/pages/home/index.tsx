@@ -1,8 +1,9 @@
 import { getNoticeList } from '@/server/notice';
-import { Card } from '@arco-design/web-react';
-import { Table, Button } from '@arco-design/web-react';
+import { Card, Popconfirm } from '@arco-design/web-react';
+import { Table, Button, Tooltip } from '@arco-design/web-react';
 import { useEffect, useState } from 'react';
 import CreateNoticeModal from './components/createNoticeModal';
+import { IconDelete, IconEdit } from '@arco-design/web-react/icon';
 function Home() {
   const columns = [
     {
@@ -24,6 +25,29 @@ function Home() {
     {
       title: '更新时间',
       dataIndex: 'update_time',
+    },
+    {
+      title: '操作',
+      dataIndex: 'operations',
+      render: (_, record) => (
+        <div style={{ display: 'flex', cursor: 'pointer', fontSize: '16px' }}>
+          <Popconfirm
+            focusLock
+            title="删除确认"
+            content={`确认删除通知吗?`}
+            onOk={() => {}}
+            onCancel={() => {}}
+          >
+            <Tooltip content="删除">
+              <IconDelete style={{ color: 'red', marginRight: '5px' }} />
+            </Tooltip>
+          </Popconfirm>
+
+          <Tooltip content="编辑">
+            <IconEdit />
+          </Tooltip>
+        </div>
+      ),
     },
   ];
 
