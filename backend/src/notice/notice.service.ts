@@ -79,7 +79,7 @@ export class NoticeService {
   // 删除通知
   async deleteNotice(id: number) {
     const foundNotice = await this.noticeRepository.findOneBy({
-      id: +id,
+      id,
     });
 
     if (foundNotice) {

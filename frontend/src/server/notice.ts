@@ -17,3 +17,8 @@ export const getNoticeTypeList = () => {
 export const getNoticeDetailById = (id: number) => {
   return request.get<ListResType<NoticeItem>>(`/notice/${id}`);
 };
+
+// 删除通知
+export const deleteNoticeDetailById = (id: number) => {
+  return request.delete<ListResType<NoticeItem>>(`/notice/${id}`);
+};

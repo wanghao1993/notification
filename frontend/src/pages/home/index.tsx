@@ -1,4 +1,4 @@
-import { getNoticeList } from '@/server/notice';
+import { deleteNoticeDetailById, getNoticeList } from '@/server/notice';
 import { Card, Popconfirm } from '@arco-design/web-react';
 import { Table, Button, Tooltip } from '@arco-design/web-react';
 import { useEffect, useState } from 'react';
@@ -35,7 +35,7 @@ function Home() {
             focusLock
             title="删除确认"
             content={`确认删除通知吗?`}
-            onOk={() => {}}
+            onOk={() => deleteNotice(record.id)}
             onCancel={() => {}}
           >
             <Tooltip content="删除">
@@ -54,16 +54,27 @@ function Home() {
   const [dataSource, setDataSource] = useState([]);
 
   useEffect(() => {
+    getList();
+  }, []);
+
+  const getList = () => {
     getNoticeList({
       page: 1,
       pageSize: 50,
     }).then((res) => {
       setDataSource(res.data.list);
     });
-  }, []);
+  };
 
   // 新增通知
   const [visible, setVisible] = useState(false);
+
+  // 删除通知
+  const deleteNotice = (id: number) => {
+    deleteNoticeDetailById(id).then((res) => {
+      getList();
+    });
+  };
   return (
     <Card style={{ height: '80vh' }}>
       <div className="mb-2 flex justify-between ">

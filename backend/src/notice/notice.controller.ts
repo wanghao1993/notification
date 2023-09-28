@@ -47,6 +47,11 @@ export class NoticeController {
 
   @Get(':id')
   getNoticeById(@Param('id', ParseIntPipe) id: number) {
-    return this.noticeService.getNoticeById(id);
+    return this.noticeService.deleteNotice(id);
+  }
+
+  @Delete(':id')
+  deleteNoticeById(@Param('id', ParseIntPipe) id: number) {
+    return this.noticeService.deleteNotice(id);
   }
 }
