@@ -1,8 +1,4 @@
-export interface NoticeItem {
-  id: number;
-  title: string;
-  content: string;
-  notice_type: string;
+export interface NoticeItem extends CreateNotice {
   create_time: string;
   update_time: string;
 }
@@ -10,4 +6,15 @@ export interface NoticeItem {
 export interface noticeTypeItem {
   notice_type: string;
   notice_type_label: string;
+}
+
+export interface CreateNotice {
+  notice_type: string;
+  title: string;
+  content: string;
+  creator: string;
+}
+
+export interface UpdateNotice extends CreateNotice {
+  id: number;
 }

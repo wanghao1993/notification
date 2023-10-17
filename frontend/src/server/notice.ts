@@ -1,5 +1,10 @@
 import request from './index';
-import { NoticeItem, noticeTypeItem } from './notice.modal';
+import {
+  CreateNotice,
+  NoticeItem,
+  UpdateNotice,
+  noticeTypeItem,
+} from './notice.modal';
 
 // 获取通知列表
 export const getNoticeList = (params: { page: number; pageSize: number }) => {
@@ -15,10 +20,20 @@ export const getNoticeTypeList = () => {
 
 // 获取通知详情
 export const getNoticeDetailById = (id: number) => {
-  return request.get<ListResType<NoticeItem>>(`/notice/${id}`);
+  return request.get<NoticeItem>(`/notice/detail?id=${id}`);
 };
 
 // 删除通知
 export const deleteNoticeDetailById = (id: number) => {
   return request.delete<ListResType<NoticeItem>>(`/notice/${id}`);
+};
+
+// 新增通知
+export const createNoticeApi = (data: CreateNotice) => {
+  return request.post<ListResType<NoticeItem>>(`/notice/create`, data);
+};
+
+// 编辑通知
+export const modifyNoticeApi = (data: UpdateNotice) => {
+  return request.put<ListResType<NoticeItem>>(`/notice/update_notice`, data);
 };

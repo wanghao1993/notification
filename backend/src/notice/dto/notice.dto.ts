@@ -14,6 +14,9 @@ export class CreateNoticeDto {
   })
   title: string;
 
+  @IsNotEmpty({
+    message: '创建人不可为空',
+  })
   creator: string;
 
   @IsNotEmpty({

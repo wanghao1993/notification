@@ -3,7 +3,7 @@ import { Card, Popconfirm } from '@arco-design/web-react';
 import { Table, Button, Tooltip } from '@arco-design/web-react';
 import { useEffect, useState } from 'react';
 import CreateNoticeModal from './components/createNoticeModal';
-import { IconDelete, IconEdit } from '@arco-design/web-react/icon';
+import { IconDelete, IconEdit, IconSend } from '@arco-design/web-react/icon';
 function Home() {
   const columns = [
     {
@@ -39,13 +39,25 @@ function Home() {
             onCancel={() => {}}
           >
             <Tooltip content="删除">
-              <IconDelete style={{ color: 'red', marginRight: '5px' }} />
+              <IconDelete style={{ color: 'red', marginRight: '10px' }} />
             </Tooltip>
           </Popconfirm>
 
           <Tooltip content="编辑">
-            <IconEdit />
+            <IconEdit onClick={() => editNotice(record.id)} />
           </Tooltip>
+
+          <Popconfirm
+            focusLock
+            title="发送确认"
+            content={`确认发送通知吗? 发送后所有用户将会收到通知。`}
+            onOk={() => sendNotice(record.id)}
+            onCancel={() => {}}
+          >
+            <Tooltip content="发送">
+              <IconSend style={{ marginLeft: '10px' }} />
+            </Tooltip>
+          </Popconfirm>
         </div>
       ),
     },
@@ -75,6 +87,19 @@ function Home() {
       getList();
     });
   };
+
+  // 编辑通知
+  const [noticeId, setNoticeId] = useState<number>();
+
+  const editNotice = (id: number) => {
+    setNoticeId(id);
+    setVisible(true);
+  };
+
+  // 发送通知
+  const sendNotice = (id: number) => {
+    console.log(id, '发送通知');
+  };
   return (
     <Card style={{ height: '80vh' }}>
       <div className="mb-2 flex justify-between ">
@@ -89,7 +114,11 @@ function Home() {
       <Table rowKey="id" columns={columns} data={dataSource} />
 
       {visible ? (
-        <CreateNoticeModal visible={visible} setVisible={setVisible} id={1} />
+        <CreateNoticeModal
+          visible={visible}
+          setVisible={setVisible}
+          id={noticeId}
+        />
       ) : null}
     </Card>
   );

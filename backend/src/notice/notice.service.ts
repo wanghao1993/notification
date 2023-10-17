@@ -25,8 +25,8 @@ export class NoticeService {
     const notice = new NoticeList();
     notice.content = reqBody.content;
     notice.title = reqBody.title;
-    notice.notice_type = reqBody.notice_type || 'notifacation';
-
+    notice.notice_type = reqBody.notice_type || 'notification';
+    notice.creator = reqBody.creator;
     await this.noticeRepository.save(notice);
 
     return '新增成功';

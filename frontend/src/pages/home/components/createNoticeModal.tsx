@@ -1,7 +1,12 @@
-import { getNoticeDetailById, getNoticeTypeList } from '@/server/notice';
+import {
+  createNoticeApi,
+  getNoticeDetailById,
+  getNoticeTypeList,
+} from '@/server/notice';
 import { Modal, Form, Input, Select } from '@arco-design/web-react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from '@uiw/react-md-editor';
+import { NoticeItem } from '@/server/notice.modal';
 
 const FormItem = Form.Item;
 export default function NoticeModal(props: {
@@ -11,14 +16,28 @@ export default function NoticeModal(props: {
 }) {
   const [title, setTitle] = useState('新增通知');
 
-  const [noticeDetail, setNoticeDetail] = useState({
-    notice_type: '',
-    content: '',
-    title: '',
-  });
+  const formRef = useRef();
 
+  // 获取通知详情
   const getNoticeById = () => {
-    getNoticeDetailById(1);
+    getNoticeDetailById(props.id).then((res) => {
+      formRef.current.setFieldsValue({
+        ...res.data,
+      });
+    });
+  };
+
+  // 创建或者更新通知
+  const confirmHandler = async () => {
+    const valus = await formRef.current?.validate();
+    console.log(valus);
+    if (props.id) {
+    } else {
+      createNoticeApi({
+        ...valus,
+        creator: 'isaac.wang1',
+      });
+    }
   };
 
   useEffect(() => {
@@ -51,6 +70,7 @@ export default function NoticeModal(props: {
         visible={props.visible}
         autoFocus={false}
         onCancel={() => props.setVisible(false)}
+        onOk={() => confirmHandler()}
         focusLock={true}
       >
         <div>
@@ -58,10 +78,10 @@ export default function NoticeModal(props: {
             wrapperCol={{ span: 20 }}
             labelCol={{ span: 4 }}
             initialValues={{
-              title: '',
               notice_type: 'notifacation',
-              content: '',
             }}
+            ref={formRef}
+            scrollToFirstError
           >
             <FormItem
               label="通知标题"

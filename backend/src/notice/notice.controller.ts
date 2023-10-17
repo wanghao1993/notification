@@ -3,11 +3,11 @@ import {
   Controller,
   Delete,
   Get,
-  Param,
   ParseIntPipe,
   Post,
   Put,
   Query,
+  Param,
 } from '@nestjs/common';
 import {
   CreateNoticeDto,
@@ -45,9 +45,9 @@ export class NoticeController {
     return this.noticeService.getNoticeTypeList();
   }
 
-  @Get(':id')
-  getNoticeById(@Param('id', ParseIntPipe) id: number) {
-    return this.noticeService.deleteNotice(id);
+  @Get('/detail')
+  getNoticeById(@Query('id', ParseIntPipe) id: number) {
+    return this.noticeService.getNoticeById(id);
   }
 
   @Delete(':id')
