@@ -3,7 +3,7 @@ import {
   getNoticeDetailById,
   getNoticeTypeList,
 } from '@/server/notice';
-import { Modal, Form, Input, Select } from '@arco-design/web-react';
+import { Modal, Form, Input, Select, Message } from '@arco-design/web-react';
 import React, { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from '@uiw/react-md-editor';
 import { NoticeItem } from '@/server/notice.modal';
@@ -33,10 +33,13 @@ export default function NoticeModal(props: {
     console.log(valus);
     if (props.id) {
     } else {
-      createNoticeApi({
+      await createNoticeApi({
         ...valus,
         creator: 'isaac.wang1',
       });
+
+      Message.success('新增成功');
+      props.setVisible(false);
     }
   };
 

@@ -81,6 +81,12 @@ function Home() {
   // 新增通知
   const [visible, setVisible] = useState(false);
 
+  useEffect(() => {
+    if (!visible) {
+      getList();
+    }
+  }, [visible]);
+
   // 删除通知
   const deleteNotice = (id: number) => {
     deleteNoticeDetailById(id).then((res) => {
