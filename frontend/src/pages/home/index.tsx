@@ -1,9 +1,10 @@
 import { deleteNoticeDetailById, getNoticeList } from '@/server/notice';
-import { Card, Popconfirm } from '@arco-design/web-react';
+import { Card, Modal, Popconfirm } from '@arco-design/web-react';
 import { Table, Button, Tooltip } from '@arco-design/web-react';
 import { useEffect, useState } from 'react';
 import CreateNoticeModal from './components/createNoticeModal';
 import { IconDelete, IconEdit, IconSend } from '@arco-design/web-react/icon';
+import { NoticeItem } from '@/server/notice.modal';
 function Home() {
   const columns = [
     {
@@ -12,7 +13,7 @@ function Home() {
     },
     {
       title: '通知类型',
-      dataIndex: 'notice_type',
+      dataIndex: 'notice_type_zh',
     },
     {
       title: '创建人',
@@ -58,6 +59,10 @@ function Home() {
               <IconSend style={{ marginLeft: '10px' }} />
             </Tooltip>
           </Popconfirm>
+
+          <Tooltip content="测试">
+            <IconEdit onClick={() => preview(record)} />
+          </Tooltip>
         </div>
       ),
     },
@@ -94,10 +99,10 @@ function Home() {
     });
   };
 
-  // 编辑通知
+  // 编辑/新增通知
   const [noticeId, setNoticeId] = useState<number>();
 
-  const editNotice = (id: number) => {
+  const editNotice = (id?: number) => {
     setNoticeId(id);
     setVisible(true);
   };
@@ -106,12 +111,32 @@ function Home() {
   const sendNotice = (id: number) => {
     console.log(id, '发送通知');
   };
+
+  // 预览
+
+  const config = {
+    title: '22',
+    content: 'xxx',
+  };
+  const [modal] = Modal.useModal();
+
+  const preview = (notice: NoticeItem) => {
+    if (notice.notice_type === 'notification') {
+    } else if (notice.notice_type === 'loop_run') {
+    } else if (notice.notice_type === 'modal') {
+      console.log(notice.content);
+      modal.confirm({
+        title: notice.title,
+        content: 111,
+      });
+    }
+  };
   return (
     <Card style={{ height: '80vh' }}>
       <div className="mb-2 flex justify-between ">
         <div className="font-bold">通知中心</div>
         <div>
-          <Button type="primary" onClick={() => setVisible(true)}>
+          <Button type="primary" onClick={() => editNotice(null)}>
             + 新增通知
             {visible}
           </Button>

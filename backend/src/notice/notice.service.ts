@@ -47,7 +47,8 @@ export class NoticeService {
     });
 
     noticeList.forEach((item) => {
-      item['notice_type'] = listMap[item.notice_type];
+      item['notice_type'] = item.notice_type;
+      item['notice_type_zh'] = listMap[item.notice_type];
     });
     return {
       list: noticeList,

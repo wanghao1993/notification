@@ -1,6 +1,7 @@
 export interface NoticeItem extends CreateNotice {
   create_time: string;
   update_time: string;
+  notice_type_zh: string;
 }
 
 export interface noticeTypeItem {

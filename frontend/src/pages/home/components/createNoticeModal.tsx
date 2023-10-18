@@ -2,12 +2,16 @@ import {
   createNoticeApi,
   getNoticeDetailById,
   getNoticeTypeList,
+  modifyNoticeApi,
 } from '@/server/notice';
 import { Modal, Form, Input, Select, Message } from '@arco-design/web-react';
 import React, { useEffect, useRef, useState } from 'react';
-import ReactMarkdown from '@uiw/react-md-editor';
-import { NoticeItem } from '@/server/notice.modal';
-
+import MarkdownIt from 'markdown-it';
+import MdEditor from 'react-markdown-editor-lite';
+// import style manually
+import 'react-markdown-editor-lite/lib/index.css';
+// Initialize a markdown parser
+const mdParser = new MarkdownIt(/* Markdown-it options */);
 const FormItem = Form.Item;
 export default function NoticeModal(props: {
   visible: boolean;
@@ -30,19 +34,24 @@ export default function NoticeModal(props: {
   // 创建或者更新通知
   const confirmHandler = async () => {
     const valus = await formRef.current?.validate();
-    console.log(valus);
     if (props.id) {
+      await modifyNoticeApi({
+        ...valus,
+        creator: 'isaac.wang1',
+        id: props.id,
+      });
     } else {
       await createNoticeApi({
         ...valus,
         creator: 'isaac.wang1',
       });
-
-      Message.success('新增成功');
-      props.setVisible(false);
     }
+    Message.success('success');
+
+    props.setVisible(false);
   };
 
+  const handleEditorChange = ({ html, text }) => {};
   useEffect(() => {
     if (props.id) {
       getNoticeById();
@@ -81,7 +90,7 @@ export default function NoticeModal(props: {
             wrapperCol={{ span: 20 }}
             labelCol={{ span: 4 }}
             initialValues={{
-              notice_type: 'notifacation',
+              notice_type: 'notification',
             }}
             ref={formRef}
             scrollToFirstError
@@ -127,7 +136,11 @@ export default function NoticeModal(props: {
                     field="content"
                     rules={[{ required: true }]}
                   >
-                    <ReactMarkdown onError={(val) => val.toString()} value="" />
+                    <MdEditor
+                      style={{ height: '500px' }}
+                      renderHTML={(text) => mdParser.render(text)}
+                      onChange={handleEditorChange}
+                    />
                   </FormItem>
                 );
               }}
