@@ -134,7 +134,7 @@ function Home() {
   return (
     <Card style={{ height: '80vh' }}>
       <div className="mb-2 flex justify-between ">
-        <div className="font-bold">通知中心</div>
+        <div className="font-bold"></div>
         <div>
           <Button type="primary" onClick={() => editNotice(null)}>
             + 新增通知

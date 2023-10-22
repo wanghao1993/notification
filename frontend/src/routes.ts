@@ -16,6 +16,10 @@ export const routes: IRoute[] = [
     name: 'Home',
     key: 'home',
   },
+  {
+    name: 'ServiceList',
+    key: 'service',
+  },
 ];
 
 export const getName = (path: string, routes) => {
@@ -68,7 +72,6 @@ const useRoute = (userPermission): [IRoute[], string] => {
       }
     }
 
-    console.log(arr)
     return arr;
   };
 

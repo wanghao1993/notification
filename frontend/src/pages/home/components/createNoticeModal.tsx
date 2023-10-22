@@ -10,6 +10,7 @@ import MarkdownIt from 'markdown-it';
 import MdEditor from 'react-markdown-editor-lite';
 // import style manually
 import 'react-markdown-editor-lite/lib/index.css';
+import { getServiceList } from '@/server/service';
 // Initialize a markdown parser
 const mdParser = new MarkdownIt(/* Markdown-it options */);
 const FormItem = Form.Item;
@@ -62,13 +63,23 @@ export default function NoticeModal(props: {
   }, [props.id]);
 
   const [noticeTypeList, setnoticeTypeList] = useState([]);
-
+  const [serviceList, setServiceList] = useState([]);
   useEffect(() => {
+    // 获取通知类型
     getNoticeTypeList().then((res) => {
       setnoticeTypeList(
         res.data.list.map((item) => ({
           label: item.notice_type_label,
           value: item.notice_type,
+        }))
+      );
+    });
+    // 获取服务列表
+    getServiceList().then((res) => {
+      setServiceList(
+        res.data.list.map((item) => ({
+          label: item.service_name,
+          value: item.service_name,
         }))
       );
     });
@@ -101,6 +112,29 @@ export default function NoticeModal(props: {
               rules={[{ required: true }]}
             >
               <Input placeholder="请输入通知标题" />
+            </FormItem>
+            <FormItem
+              label="服务"
+              field="service_name"
+              rules={[{ required: true }]}
+            >
+              <Select
+                placeholder="请选择服务"
+                options={serviceList}
+                showSearch
+                mode="multiple"
+                allowClear
+                allowCreate={{
+                  formatter: (inputValue, creating) => {
+                    return {
+                      value: inputValue,
+                      label: `${
+                        creating ? '回车创建: ' : '已创建: '
+                      }${inputValue}`,
+                    };
+                  },
+                }}
+              />
             </FormItem>
             <FormItem
               label="通知类型"

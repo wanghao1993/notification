@@ -2,6 +2,11 @@ import { IsNotEmpty, MaxLength } from 'class-validator';
 
 export class CreateNoticeDto {
   @IsNotEmpty({
+    message: '服务不可为空',
+  })
+  service_name: string;
+
+  @IsNotEmpty({
     message: '通知类型不可为空',
   })
   notice_type: string;

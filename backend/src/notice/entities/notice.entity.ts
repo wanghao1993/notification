@@ -15,6 +15,12 @@ export class NoticeList {
 
   @Column({
     length: 200,
+    comment: '服务',
+  })
+  service_name: string;
+
+  @Column({
+    length: 200,
     comment: '标题',
   })
   title: string;

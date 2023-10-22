@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -23,6 +23,7 @@ export class NoticeService {
   // 新增通知
   async createNotice(reqBody: CreateNoticeDto) {
     const notice = new NoticeList();
+    notice.service_name = reqBody.service_name;
     notice.content = reqBody.content;
     notice.title = reqBody.title;
     notice.notice_type = reqBody.notice_type || 'notification';
@@ -66,6 +67,7 @@ export class NoticeService {
       foundNotice.notice_type = reqBody.notice_type;
       foundNotice.title = reqBody.title;
       foundNotice.content = reqBody.content;
+      foundNotice.service_name = reqBody.service_name;
 
       await this.noticeRepository.save(foundNotice);
 
@@ -73,7 +75,7 @@ export class NoticeService {
         msg: '更新成功',
       };
     } else {
-      throw Error('id不正确，没有此通知');
+      throw new HttpException('id不正确，没有此通知', HttpStatus.OK);
     }
   }
 
@@ -90,7 +92,7 @@ export class NoticeService {
         msg: '删除成功',
       };
     } else {
-      throw Error('id不正确，没有此通知');
+      throw new HttpException('id不正确，没有此通知', HttpStatus.OK);
     }
   }
 
@@ -113,7 +115,7 @@ export class NoticeService {
     if (res) {
       return res;
     } else {
-      throw new HttpException('id不正确', 500);
+      throw new HttpException('id不正确，没有此通知', HttpStatus.OK);
     }
   }
 }

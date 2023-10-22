@@ -3,10 +3,10 @@ import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
 import { Layout, Menu, Breadcrumb, Spin } from '@arco-design/web-react';
 import cs from 'classnames';
 import {
-  IconTag,
   IconMenuFold,
   IconMenuUnfold,
   IconHome,
+  IconList,
 } from '@arco-design/web-react/icon';
 import { useSelector } from 'react-redux';
 import qs from 'query-string';
@@ -31,6 +31,8 @@ function getIconFromKey(key) {
   switch (key) {
     case 'home':
       return <IconHome className={styles.icon} />;
+    case 'service':
+      return <IconList className={styles.icon} />;
     default:
       return <div className={styles['icon-empty']} />;
   }
@@ -89,7 +91,7 @@ function PageLayout() {
 
   const flattenRoutes = useMemo(() => getFlattenRoutes(routes) || [], [routes]);
 
-  console.log(flattenRoutes)
+  console.log(flattenRoutes);
   function onClickMenuItem(key) {
     const currentRoute = flattenRoutes.find((r) => r.key === key);
     const component = currentRoute.component;
@@ -247,7 +249,7 @@ function PageLayout() {
                     );
                   })}
                   <Route exact path="/">
-                    <Redirect to='/home' />
+                    <Redirect to="/home" />
                   </Route>
                   <Route
                     path="*"
