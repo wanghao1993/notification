@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Put,
 } from '@nestjs/common';
 import { ServiceService } from './service.service';
 import { CreateServiceDto } from './dto/create-service.dto';
@@ -28,8 +29,18 @@ export class ServiceController {
     return this.serviceService.findAll();
   }
 
-  @Delete('delete/:serviceName')
-  remove(@Param('serviceName') serviceName: string) {
-    return this.serviceService.remove(serviceName);
+  @Delete('delete/:id')
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.serviceService.remove(id);
+  }
+
+  @Get('detail/:id')
+  getServiceDetailById(@Param('id', ParseIntPipe) id: number) {
+    return this.serviceService.getDetail(id);
+  }
+
+  @Put('update/')
+  updateService(@Body(MyValidatePipe) data: UpdateServiceDto) {
+    return this.serviceService.update(data);
   }
 }

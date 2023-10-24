@@ -23,11 +23,13 @@ export class NoticeService {
   // 新增通知
   async createNotice(reqBody: CreateNoticeDto) {
     const notice = new NoticeList();
-    notice.service_name = reqBody.service_name;
+    notice.service_id = reqBody.service_id;
     notice.content = reqBody.content;
     notice.title = reqBody.title;
     notice.notice_type = reqBody.notice_type || 'notification';
-    notice.creator = reqBody.creator;
+    // todo
+    notice.creator = 'isaac.wang1';
+    notice.updator = 'isaac.wang1';
     await this.noticeRepository.save(notice);
 
     return '新增成功';

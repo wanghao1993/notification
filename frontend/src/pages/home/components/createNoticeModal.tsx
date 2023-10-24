@@ -11,6 +11,7 @@ import MdEditor from 'react-markdown-editor-lite';
 // import style manually
 import 'react-markdown-editor-lite/lib/index.css';
 import { getServiceList } from '@/server/service';
+import { serviceStatus } from '@/pages/service/constant';
 // Initialize a markdown parser
 const mdParser = new MarkdownIt(/* Markdown-it options */);
 const FormItem = Form.Item;
@@ -77,10 +78,12 @@ export default function NoticeModal(props: {
     // 获取服务列表
     getServiceList().then((res) => {
       setServiceList(
-        res.data.list.map((item) => ({
-          label: item.service_name,
-          value: item.service_name,
-        }))
+        res.data.list
+          .filter((item) => item.service_status === serviceStatus.normal)
+          .map((item) => ({
+            label: item.service_name,
+            value: item.service_id,
+          }))
       );
     });
   }, []);
@@ -115,7 +118,7 @@ export default function NoticeModal(props: {
             </FormItem>
             <FormItem
               label="服务"
-              field="service_name"
+              field="service_id"
               rules={[{ required: true }]}
             >
               <Select

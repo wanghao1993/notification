@@ -3,7 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
@@ -11,7 +11,12 @@ import {
   name: 't_service_list',
 })
 export class Service {
-  @PrimaryColumn({
+  @PrimaryGeneratedColumn({
+    comment: '服务ID.',
+  })
+  service_id: number;
+
+  @Column({
     length: 100,
     comment: '服务名',
   })

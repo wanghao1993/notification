@@ -3,7 +3,12 @@ import { Card, Modal, Popconfirm } from '@arco-design/web-react';
 import { Table, Button, Tooltip } from '@arco-design/web-react';
 import { useEffect, useState } from 'react';
 import CreateNoticeModal from './components/createNoticeModal';
-import { IconDelete, IconEdit, IconSend } from '@arco-design/web-react/icon';
+import {
+  IconDelete,
+  IconEdit,
+  IconSend,
+  IconPlayCircle,
+} from '@arco-design/web-react/icon';
 import { NoticeItem } from '@/server/notice.modal';
 function Home() {
   const columns = [
@@ -56,12 +61,12 @@ function Home() {
             onCancel={() => {}}
           >
             <Tooltip content="发送">
-              <IconSend style={{ marginLeft: '10px' }} />
+              <IconSend style={{ marginLeft: '10px', marginRight: '10px' }} />
             </Tooltip>
           </Popconfirm>
 
           <Tooltip content="测试">
-            <IconEdit onClick={() => preview(record)} />
+            <IconPlayCircle onClick={() => preview(record)} />
           </Tooltip>
         </div>
       ),

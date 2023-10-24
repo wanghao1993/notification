@@ -5,18 +5,40 @@ import {
   Popconfirm,
   Table,
   Tooltip,
+  Tag,
 } from '@arco-design/web-react';
 import { ColumnProps } from '@arco-design/web-react/es/Table';
 import { useEffect, useState } from 'react';
 import { UseServiceUtils } from './utils';
 import { IconDelete, IconEdit } from '@arco-design/web-react/icon';
+import { serviceStatus } from './constant';
 
 export default function ServiceList() {
+  const getStatusTag = (service_status: number) => {
+    if (service_status === serviceStatus.normal) {
+      return (
+        <Tag color="green"> {serviceStatus.toString(service_status)} </Tag>
+      );
+    } else if (service_status === serviceStatus.forbidden) {
+      return (
+        <Tag color="orange"> {serviceStatus.toString(service_status)} </Tag>
+      );
+    }
+  };
+
   const columns: ColumnProps[] = [
     {
       key: 'service_name',
       dataIndex: 'service_name',
       title: '服务名',
+    },
+    {
+      key: 'service_status',
+      dataIndex: 'service_status',
+      title: '状态',
+      render(_, item) {
+        return getStatusTag(item.service_status);
+      },
     },
     {
       key: 'administrator',
@@ -39,7 +61,7 @@ export default function ServiceList() {
             focusLock
             title="删除确认"
             content={`确认删除通知吗?`}
-            onOk={() => deleteService(record.service_name)}
+            onOk={() => deleteService(record.service_id)}
             onCancel={() => {}}
           >
             <Tooltip content="删除">
@@ -48,7 +70,7 @@ export default function ServiceList() {
           </Popconfirm>
 
           <Tooltip content="编辑">
-            <IconEdit onClick={() => addService(record.service_name)} />
+            <IconEdit onClick={() => addService(record.service_id)} />
           </Tooltip>
         </div>
       ),
@@ -67,8 +89,8 @@ export default function ServiceList() {
     closeCallBack: () => getList(),
   });
 
-  const addService = (service_name?: string) => {
-    create(service_name);
+  const addService = (service_id?: number) => {
+    create(service_id);
   };
 
   useEffect(() => {

@@ -4,7 +4,7 @@ export class CreateNoticeDto {
   @IsNotEmpty({
     message: '服务不可为空',
   })
-  service_name: string;
+  service_id: number;
 
   @IsNotEmpty({
     message: '通知类型不可为空',

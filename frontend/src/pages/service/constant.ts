@@ -1,6 +1,8 @@
-export const service = {
+export const serviceStatus = {
   toString(status: number) {
-    return service.options.find((item) => item.value === status)?.label || '-';
+    return (
+      serviceStatus.options.find((item) => item.value === status)?.label || '-'
+    );
   },
   normal: 1,
   forbidden: 2,

@@ -9,6 +9,7 @@ import { UpdateServiceDto } from './dto/update-service.dto';
 import { Service } from './entities/service.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { updateNoticeDto } from 'src/notice/dto/notice.dto';
 
 @Injectable()
 export class ServiceService {
@@ -27,21 +28,41 @@ export class ServiceService {
     };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} service`;
-  }
-
-  update(id: number, updateServiceDto: UpdateServiceDto) {
-    return `This action updates a #${id} service`;
-  }
-
-  async remove(serviceName: string) {
+  async remove(id: number) {
     const service = await this.serviceRepository.findOneBy({
-      service_name: serviceName,
+      service_id: id,
     });
 
     if (service) {
       await this.serviceRepository.remove(service);
+    } else {
+      throw new HttpException('服务不存在', HttpStatus.OK);
+    }
+  }
+
+  async getDetail(id: number) {
+    const service = await this.serviceRepository.findOneBy({
+      service_id: id,
+    });
+
+    if (service) {
+      return service;
+    } else {
+      throw new HttpException('服务不存在', HttpStatus.OK);
+    }
+  }
+
+  async update(data: UpdateServiceDto) {
+    const service = await this.serviceRepository.findOneBy({
+      service_id: data.service_id,
+    });
+
+    if (service) {
+      const updatedService = await this.serviceRepository.save({
+        ...data,
+      });
+
+      return updatedService;
     } else {
       throw new HttpException('服务不存在', HttpStatus.OK);
     }

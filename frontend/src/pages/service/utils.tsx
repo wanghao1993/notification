@@ -1,22 +1,27 @@
-import { ServiceItem } from '@/server/service.modal';
 import {
   Button,
   Form,
-  FormInstance,
   Input,
   Message,
   Modal,
   Select,
 } from '@arco-design/web-react';
 import { useEffect, useRef, useState } from 'react';
-import { service } from './constant';
-import { createService, deleteServiceApi } from '@/server/service';
+import { serviceStatus } from './constant';
+import {
+  createService,
+  deleteServiceApi,
+  getServiceById,
+  updateService,
+} from '@/server/service';
 
 export function UseServiceUtils(data?: { closeCallBack: () => void }) {
   const formRef = useRef();
   const FormItem = Form.Item;
 
   const [userList, setUserList] = useState([]);
+
+  const [serviceId, setServiceId] = useState<number>();
   const getUserList = () => {
     setUserList([
       {
@@ -30,6 +35,7 @@ export function UseServiceUtils(data?: { closeCallBack: () => void }) {
     getUserList();
   }, []);
 
+  const getServiceId = () => serviceId;
   const [service_name, setServiceName] = useState('');
 
   const FormContent = (
@@ -37,7 +43,7 @@ export function UseServiceUtils(data?: { closeCallBack: () => void }) {
       <Form
         ref={formRef}
         initialValues={{
-          service_status: service.normal,
+          service_status: serviceStatus.normal,
           administrator: ['isaac.wang1'],
         }}
       >
@@ -68,9 +74,9 @@ export function UseServiceUtils(data?: { closeCallBack: () => void }) {
           ]}
         >
           <Select
-            defaultValue={service.normal}
+            defaultValue={serviceStatus.normal}
             placeholder="请选择服务状态"
-            options={service.options}
+            options={serviceStatus.options}
           />
         </FormItem>
 
@@ -80,7 +86,7 @@ export function UseServiceUtils(data?: { closeCallBack: () => void }) {
           help="管理员可以管理本服务下的通知；可不填，默认为创建人"
         >
           <Select
-            defaultValue={service.normal}
+            defaultValue={serviceStatus.normal}
             mode="multiple"
             placeholder="请选择管理员"
             options={userList}
@@ -93,18 +99,23 @@ export function UseServiceUtils(data?: { closeCallBack: () => void }) {
             onClick={async () => {
               try {
                 const values = await formRef.current.validate();
-
-                createService({
+                const id = getServiceId();
+                const api = id ? updateService : createService;
+                api({
+                  service_id: id,
                   service_name: values.service_name,
                   service_status: values.service_status,
                   administrator: values.administrator.join(','),
                 }).then((res) => {
                   if (res.code === 200) {
-                    Message.success(`服务[${values.service_name}]添加成功`);
+                    const msg = id
+                      ? `服务[${values.service_name}]编辑成功`
+                      : `服务[${values.service_name}]添加成功`;
+                    Message.success(msg);
                     Modal.destroyAll();
                     data?.closeCallBack();
                   } else {
-                    Message.error(res.msg);
+                    Message.error(res.message);
                   }
                 });
               } catch (e) {
@@ -129,21 +140,24 @@ export function UseServiceUtils(data?: { closeCallBack: () => void }) {
   );
 
   // 创建和编辑服务
-  function create(service_name?: string) {
-    setServiceName(service_name);
-
+  function create(service_id?: number) {
     Modal.confirm({
       title: service_name ? '编辑服务' : '创建服务',
       footer: null,
       content: FormContent,
       style: { width: '600px' },
     });
+    setServiceId(service_id);
 
-    if (service_name) {
-      setTimeout(() => {
-        formRef.current.setFieldsValue({
-          service_name,
-        });
+    if (service_id) {
+      getServiceById(service_id).then((res) => {
+        if (res.data) {
+          formRef.current.setFieldsValue({
+            service_name: res.data?.service_name,
+            service_status: res.data?.service_status,
+            administrator: res.data?.administrator?.split(',') || [],
+          });
+        }
       });
     }
   }

@@ -17,7 +17,7 @@ export class NoticeList {
     length: 200,
     comment: '服务',
   })
-  service_name: string;
+  service_id: number;
 
   @Column({
     length: 200,
@@ -35,6 +35,11 @@ export class NoticeList {
     comment: '创建人',
   })
   creator: string;
+
+  @Column({
+    comment: '更新人',
+  })
+  updator: string;
 
   @Column({
     length: 50,
