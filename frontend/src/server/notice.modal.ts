@@ -13,6 +13,7 @@ export interface CreateNotice {
   notice_type: string;
   title: string;
   content: string;
+  content_html: string;
   creator: string;
 }
 

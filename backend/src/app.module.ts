@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { NoticeModule } from './notice/notice.module';
@@ -7,7 +7,9 @@ import { NoticeList } from './notice/entities/notice.entity';
 import { NoticeType } from './notice/entities/notice_type.entity';
 import { Service } from './service/entities/service.entity';
 import { ServiceModule } from './service/service.module';
-import { ResponseMiddleware } from './response/response.middleware';
+import { UseerModule } from './useer/useer.module';
+import { UserModule } from './user/user.module';
+import { User } from './user/entities/user.entity';
 @Module({
   imports: [
     NoticeModule,
@@ -20,7 +22,7 @@ import { ResponseMiddleware } from './response/response.middleware';
       database: 'notice',
       synchronize: true,
       logging: true,
-      entities: [NoticeList, NoticeType, Service],
+      entities: [NoticeList, NoticeType, Service, User],
       poolSize: 10,
       connectorPackage: 'mysql2',
       extra: {
@@ -28,12 +30,10 @@ import { ResponseMiddleware } from './response/response.middleware';
       },
     }),
     ServiceModule,
+    UseerModule,
+    UserModule,
   ],
   controllers: [AppController],
-  providers: [AppService, ResponseMiddleware],
+  providers: [AppService],
 })
-export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(ResponseMiddleware).forRoutes('*');
-  }
-}
+export class AppModule {}

@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import * as dayjs from 'dayjs';
 
 @Entity({
   name: 't_service_list',
@@ -34,8 +35,8 @@ export class Service {
   administrator: string;
 
   @CreateDateColumn()
-  create_time: Date;
+  create_time: string;
 
   @UpdateDateColumn()
-  update_time: Date;
+  update_time: string;
 }

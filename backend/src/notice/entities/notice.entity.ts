@@ -5,6 +5,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { NoticeStatus } from '../enum/notice_enum';
+import * as dayjs from 'dayjs';
 
 @Entity({
   name: 't_notice_list',
@@ -14,10 +16,9 @@ export class NoticeList {
   id: number;
 
   @Column({
-    length: 200,
     comment: '服务',
   })
-  service_id: number;
+  service_id: string;
 
   @Column({
     length: 200,
@@ -26,10 +27,14 @@ export class NoticeList {
   title: string;
 
   @Column({
-    length: 5000,
     comment: '内容',
   })
   content: string;
+
+  @Column({
+    comment: 'HMTL内容',
+  })
+  content_html: string;
 
   @Column({
     comment: '创建人',
@@ -47,9 +52,18 @@ export class NoticeList {
   })
   notice_type: string;
 
-  @CreateDateColumn()
+  @Column({
+    comment: '0.未发送 1.已发送 2.撤回',
+  })
+  notice_status: NoticeStatus;
+
+  @CreateDateColumn({
+    default: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+  })
   create_time: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({
+    default: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+  })
   update_time: Date;
 }

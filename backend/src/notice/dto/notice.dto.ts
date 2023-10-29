@@ -1,10 +1,10 @@
-import { IsNotEmpty, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
 export class CreateNoticeDto {
   @IsNotEmpty({
     message: '服务不可为空',
   })
-  service_id: number;
+  service_id: number[];
 
   @IsNotEmpty({
     message: '通知类型不可为空',
@@ -27,17 +27,25 @@ export class CreateNoticeDto {
   @IsNotEmpty({
     message: '通知内容不可为空',
   })
-  @MaxLength(5000, {
-    message: '标题的长度最大为5000',
+  @IsString({
+    message: '内容类型错误',
   })
   content: string;
+
+  @IsNotEmpty({
+    message: '通知内容不可为空',
+  })
+  @IsString({
+    message: 'htmlcontent',
+  })
+  content_html: string;
 }
 
 export class updateNoticeDto extends CreateNoticeDto {
   @IsNotEmpty({
     message: 'id不可为空',
   })
-  id: string;
+  id: number;
 }
 
 export class GetMyNoticeListDto {

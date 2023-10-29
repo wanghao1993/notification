@@ -1,6 +1,7 @@
 import {
   Button,
   Form,
+  FormInstance,
   Input,
   Message,
   Modal,
@@ -16,12 +17,12 @@ import {
 } from '@/server/service';
 
 export function UseServiceUtils(data?: { closeCallBack: () => void }) {
-  const formRef = useRef();
+  let serviceId = 0;
+  const formRef = useRef<FormInstance>();
   const FormItem = Form.Item;
 
   const [userList, setUserList] = useState([]);
 
-  const [serviceId, setServiceId] = useState<number>();
   const getUserList = () => {
     setUserList([
       {
@@ -35,8 +36,31 @@ export function UseServiceUtils(data?: { closeCallBack: () => void }) {
     getUserList();
   }, []);
 
-  const getServiceId = () => serviceId;
-  const [service_name, setServiceName] = useState('');
+  const handleConfirm = async () => {
+    try {
+      const values = await formRef.current.validate();
+      const api = serviceId ? updateService : createService;
+      api({
+        service_id: serviceId,
+        service_name: values.service_name,
+        service_status: values.service_status,
+        administrator: values.administrator.join(','),
+      }).then((res) => {
+        if (res.code === 200) {
+          const msg = serviceId
+            ? `服务[${values.service_name}]编辑成功`
+            : `服务[${values.service_name}]添加成功`;
+          Message.success(msg);
+          Modal.destroyAll();
+          data?.closeCallBack();
+        } else {
+          Message.error(res.message);
+        }
+      });
+    } catch (e) {
+      Message.error('校验失败');
+    }
+  };
 
   const FormContent = (
     <div>
@@ -96,32 +120,7 @@ export function UseServiceUtils(data?: { closeCallBack: () => void }) {
         <FormItem wrapperCol={{ offset: 5 }}>
           <Button
             type="primary"
-            onClick={async () => {
-              try {
-                const values = await formRef.current.validate();
-                const id = getServiceId();
-                const api = id ? updateService : createService;
-                api({
-                  service_id: id,
-                  service_name: values.service_name,
-                  service_status: values.service_status,
-                  administrator: values.administrator.join(','),
-                }).then((res) => {
-                  if (res.code === 200) {
-                    const msg = id
-                      ? `服务[${values.service_name}]编辑成功`
-                      : `服务[${values.service_name}]添加成功`;
-                    Message.success(msg);
-                    Modal.destroyAll();
-                    data?.closeCallBack();
-                  } else {
-                    Message.error(res.message);
-                  }
-                });
-              } catch (e) {
-                Message.error('校验失败');
-              }
-            }}
+            onClick={() => handleConfirm()}
             style={{ marginRight: 24 }}
           >
             提交
@@ -141,13 +140,13 @@ export function UseServiceUtils(data?: { closeCallBack: () => void }) {
 
   // 创建和编辑服务
   function create(service_id?: number) {
+    serviceId = service_id;
     Modal.confirm({
-      title: service_name ? '编辑服务' : '创建服务',
+      title: service_id ? '编辑服务' : '创建服务',
       footer: null,
       content: FormContent,
       style: { width: '600px' },
     });
-    setServiceId(service_id);
 
     if (service_id) {
       getServiceById(service_id).then((res) => {

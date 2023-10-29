@@ -1,30 +1,15 @@
-interface UserInfo {
+export class NoticeItemVo {
   id: number;
-
-  username: string;
-
-  nickName: string;
-
-  email: string;
-
-  headPic: string;
-
-  phoneNumber: string;
-
-  isFrozen: boolean;
-
-  isAdmin: boolean;
-
-  createTime: number;
-
-  roles: string[];
-
-  permissions: string[];
-}
-export class LoginUserVo {
-  userInfo: UserInfo;
-
-  accessToken: string;
-
-  refreshToken: string;
+  service_id: number[];
+  title: string;
+  content: string;
+  content_html: string;
+  creator: string;
+  updator: string;
+  notice_type: string;
+  notice_status: number;
+  create_time: string;
+  update_time: string;
+  notice_type_zh?: string;
+  service_name?: string;
 }

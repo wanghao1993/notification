@@ -4,16 +4,19 @@ import {
   getNoticeTypeList,
   modifyNoticeApi,
 } from '@/server/notice';
-import { Modal, Form, Input, Select, Message } from '@arco-design/web-react';
-import React, { useEffect, useRef, useState } from 'react';
-import MarkdownIt from 'markdown-it';
-import MdEditor from 'react-markdown-editor-lite';
-// import style manually
-import 'react-markdown-editor-lite/lib/index.css';
+import {
+  Modal,
+  Form,
+  Input,
+  Select,
+  Message,
+  FormInstance,
+} from '@arco-design/web-react';
+import { useEffect, useRef, useState } from 'react';
+import Markdown from '@/components/Markdown';
 import { getServiceList } from '@/server/service';
 import { serviceStatus } from '@/pages/service/constant';
 // Initialize a markdown parser
-const mdParser = new MarkdownIt(/* Markdown-it options */);
 const FormItem = Form.Item;
 export default function NoticeModal(props: {
   visible: boolean;
@@ -22,7 +25,7 @@ export default function NoticeModal(props: {
 }) {
   const [title, setTitle] = useState('新增通知');
 
-  const formRef = useRef();
+  const formRef = useRef<FormInstance>();
 
   // 获取通知详情
   const getNoticeById = () => {
@@ -30,30 +33,48 @@ export default function NoticeModal(props: {
       formRef.current.setFieldsValue({
         ...res.data,
       });
+
+      setValue({
+        text: res.data.content,
+        html: res.data.content_html,
+      });
     });
   };
 
   // 创建或者更新通知
   const confirmHandler = async () => {
     const valus = await formRef.current?.validate();
+
+    const params = {
+      ...valus,
+      creator: 'isaac.wang1', // todo
+      content_html: markdownValue.html,
+      id: props.id,
+    };
     if (props.id) {
-      await modifyNoticeApi({
-        ...valus,
-        creator: 'isaac.wang1',
-        id: props.id,
-      });
+      await modifyNoticeApi(params);
     } else {
-      await createNoticeApi({
-        ...valus,
-        creator: 'isaac.wang1',
-      });
+      await createNoticeApi(params);
     }
     Message.success('success');
 
     props.setVisible(false);
   };
 
-  const handleEditorChange = ({ html, text }) => {};
+  const [markdownValue, setValue] = useState<{ html: string; text: string }>({
+    html: '',
+    text: '',
+  });
+
+  const handleEditorChange = ({ html, text }) => {
+    setValue({
+      html,
+      text,
+    });
+    formRef.current.setFieldsValue({
+      content: text,
+    });
+  };
   useEffect(() => {
     if (props.id) {
       getNoticeById();
@@ -127,16 +148,6 @@ export default function NoticeModal(props: {
                 showSearch
                 mode="multiple"
                 allowClear
-                allowCreate={{
-                  formatter: (inputValue, creating) => {
-                    return {
-                      value: inputValue,
-                      label: `${
-                        creating ? '回车创建: ' : '已创建: '
-                      }${inputValue}`,
-                    };
-                  },
-                }}
               />
             </FormItem>
             <FormItem
@@ -173,11 +184,11 @@ export default function NoticeModal(props: {
                     field="content"
                     rules={[{ required: true }]}
                   >
-                    <MdEditor
+                    <Markdown
                       style={{ height: '500px' }}
-                      renderHTML={(text) => mdParser.render(text)}
-                      onChange={handleEditorChange}
-                    />
+                      defaultValue={markdownValue.text}
+                      handleEditorChange={handleEditorChange}
+                    ></Markdown>
                   </FormItem>
                 );
               }}

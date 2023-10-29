@@ -18,6 +18,7 @@ specifiers:
   '@typescript-eslint/parser': ^5.0.0
   class-transformer: ^0.5.1
   class-validator: ^0.14.0
+  dayjs: ^1.11.10
   eslint: ^8.0.1
   eslint-config-prettier: ^8.3.0
   eslint-plugin-prettier: ^4.0.0
@@ -44,6 +45,7 @@ dependencies:
   '@nestjs/typeorm': 10.0.0_nktyjm3hkn2boz7s6l2p266t2u
   class-transformer: 0.5.1
   class-validator: 0.14.0
+  dayjs: 1.11.10
   mysql2: 3.6.0
   reflect-metadata: 0.1.13
   rxjs: 7.8.1
@@ -2186,6 +2188,10 @@ packages:
     engines: {node: '>=0.11'}
     dependencies:
       '@babel/runtime': 7.22.15
+    dev: false
+
+  /dayjs/1.11.10:
+    resolution: {integrity: sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ==}
     dev: false
 
   /debug/2.6.9:

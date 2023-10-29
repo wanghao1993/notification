@@ -44,6 +44,9 @@ export default function ServiceList() {
       key: 'administrator',
       dataIndex: 'administrator',
       title: '管理员',
+      render(_, item) {
+        return item.administrator?.join(',');
+      },
     },
     {
       title: '创建时间',
@@ -107,7 +110,7 @@ export default function ServiceList() {
           </Button>
         </div>
       </div>
-      <Table rowKey="service_name" columns={columns} data={dataSource} />
+      <Table rowKey="service_id" columns={columns} data={dataSource} />
     </Card>
   );
 }

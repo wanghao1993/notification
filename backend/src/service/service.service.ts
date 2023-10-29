@@ -10,6 +10,8 @@ import { Service } from './entities/service.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { updateNoticeDto } from 'src/notice/dto/notice.dto';
+import { ServiceItem } from './vo/service.vo';
+import * as dayjs from 'dayjs';
 
 @Injectable()
 export class ServiceService {
@@ -23,7 +25,16 @@ export class ServiceService {
   async findAll() {
     const [list, count] = await this.serviceRepository.findAndCount();
     return {
-      list: list,
+      list: list.map((item) => {
+        const vo = new ServiceItem();
+        vo.create_time = dayjs(item.create_time).format('YYYY-MM-DD HH:mm:ss');
+        vo.administrator = item.administrator.split(',');
+        vo.service_id = item.service_id;
+        vo.service_name = item.service_name;
+        vo.service_status = item.service_status;
+        vo.update_time = dayjs(item.update_time).format('YYYY-MM-DD HH:mm:ss');
+        return vo;
+      }),
       total_count: count,
     };
   }

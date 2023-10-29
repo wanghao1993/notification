@@ -1,5 +1,6 @@
 export interface CreateServiceData {
   service_id: number;
+  service_name: string;
   service_status: number;
   administrator: string;
 }
