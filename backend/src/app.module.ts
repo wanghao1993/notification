@@ -7,9 +7,8 @@ import { NoticeList } from './notice/entities/notice.entity';
 import { NoticeType } from './notice/entities/notice_type.entity';
 import { Service } from './service/entities/service.entity';
 import { ServiceModule } from './service/service.module';
-import { UseerModule } from './useer/useer.module';
-import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
+import { UserModule } from './user/user.module';
 @Module({
   imports: [
     NoticeModule,
@@ -21,7 +20,7 @@ import { User } from './user/entities/user.entity';
       password: '123456',
       database: 'notice',
       synchronize: true,
-      logging: true,
+      logging: false,
       entities: [NoticeList, NoticeType, Service, User],
       poolSize: 10,
       connectorPackage: 'mysql2',
@@ -30,7 +29,6 @@ import { User } from './user/entities/user.entity';
       },
     }),
     ServiceModule,
-    UseerModule,
     UserModule,
   ],
   controllers: [AppController],

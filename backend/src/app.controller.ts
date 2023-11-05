@@ -9,4 +9,9 @@ export class AppController {
   getHello(): number {
     return 200;
   }
+
+  @Get('/')
+  home(): number {
+    return 200;
+  }
 }

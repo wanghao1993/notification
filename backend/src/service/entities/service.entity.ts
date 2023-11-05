@@ -3,10 +3,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import * as dayjs from 'dayjs';
+import { User } from 'src/user/entities/user.entity';
 
 @Entity({
   name: 't_service_list',
@@ -22,6 +24,14 @@ export class Service {
     comment: '服务名',
   })
   service_name: string;
+
+  @OneToOne(() => User, (user) => user.subscrible_user, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    cascade: true,
+  })
+  @JoinColumn()
+  subscrible_user: User;
 
   @Column({
     comment: '服务状态',

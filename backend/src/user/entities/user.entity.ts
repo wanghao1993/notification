@@ -1,15 +1,34 @@
-import { Column, CreateDateColumn, Entity, PrimaryColumn } from 'typeorm';
+import { Service } from 'src/service/entities/service.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity({
-  name: 't_user_list',
+  name: 't_service_user_list',
 })
 export class User {
-  @PrimaryColumn()
-  user_name: string;
+  @PrimaryGeneratedColumn({
+    comment: '服务ID',
+  })
+  service_id: number;
 
   @Column()
-  service: string;
+  service_name: string;
+
+  @OneToOne(() => Service, (service) => service.subscrible_user)
+  subscrible_user: Service;
+
+  @Column()
+  user_names: string;
 
   @CreateDateColumn()
   create_time: Date;
+
+  @UpdateDateColumn()
+  update_time: Date;
 }

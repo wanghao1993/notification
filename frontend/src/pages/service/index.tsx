@@ -7,6 +7,7 @@ import {
   Tooltip,
   Tag,
 } from '@arco-design/web-react';
+import React from 'react';
 import { ColumnProps } from '@arco-design/web-react/es/Table';
 import { useEffect, useState } from 'react';
 import { UseServiceUtils } from './utils';

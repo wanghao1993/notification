@@ -9,5 +9,31 @@
     demo
   </body>
 
-  <script></script>
+  <script>
+    fetch('http://localhost:3000/user/register_service', {
+      method: 'post',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: JSON.stringify({
+        user_name: 'isaac.wang2',
+        service_name: 'ncc_frontend2',
+      }),
+    });
+
+    const socket = new WebSocket('ws://localhost:3100');
+
+    socket.onopen = () => {
+      console.log('WebSocket connection established');
+
+      // 发送消息到服务器
+      socket.send('Hello from client');
+    };
+
+    socket.onmessage = function (event) {
+      console.log(event.data);
+    };
+  </script>
 </html>

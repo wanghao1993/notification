@@ -1,4 +1,8 @@
-import { deleteNoticeDetailById, getNoticeList } from '@/server/notice';
+import {
+  deleteNoticeDetailById,
+  getNoticeList,
+  sendNoticeApi,
+} from '@/server/notice';
 import { Card, Modal, Popconfirm } from '@arco-design/web-react';
 import { Table, Button, Tooltip } from '@arco-design/web-react';
 import { useEffect, useState } from 'react';
@@ -9,6 +13,7 @@ import {
   IconSend,
   IconPlayCircle,
 } from '@arco-design/web-react/icon';
+import React from 'react';
 import { NoticeItem } from '@/server/notice.modal';
 function Home() {
   const columns = [
@@ -42,7 +47,6 @@ function Home() {
             title="删除确认"
             content={`确认删除通知吗?`}
             onOk={() => deleteNotice(record.id)}
-            onCancel={() => {}}
           >
             <Tooltip content="删除">
               <IconDelete style={{ color: 'red', marginRight: '10px' }} />
@@ -115,6 +119,7 @@ function Home() {
   // 发送通知
   const sendNotice = (id: number) => {
     console.log(id, '发送通知');
+    sendNoticeApi(id);
   };
 
   // 预览

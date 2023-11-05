@@ -13,6 +13,7 @@ import { NoticeStatus } from './enum/notice_enum';
 import { Service } from 'src/service/entities/service.entity';
 import { NoticeItemVo } from './vo/notice.vo';
 import * as dayjs from 'dayjs';
+import { WebsocketGatewayGateway } from 'src/websocket-gateway/websocket-gateway.gateway';
 
 @Injectable()
 export class NoticeService {
@@ -25,6 +26,8 @@ export class NoticeService {
 
     @InjectRepository(NoticeType)
     private noticeTypeRepository: Repository<NoticeType>,
+
+    private readonly webSocketGateway: WebsocketGatewayGateway,
   ) {}
 
   // 新增通知
@@ -183,4 +186,9 @@ export class NoticeService {
       throw new HttpException('id不正确，没有此通知', HttpStatus.OK);
     }
   }
+
+  // 发送通知
+  sendNotice = () => {
+    this.webSocketGateway.sendMessage('sxx');
+  };
 }

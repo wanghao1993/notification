@@ -37,3 +37,8 @@ export const createNoticeApi = (data: CreateNotice) => {
 export const modifyNoticeApi = (data: UpdateNotice) => {
   return request.put<ListResType<NoticeItem>>(`/notice/update_notice`, data);
 };
+
+// 编辑通知
+export const sendNoticeApi = (id: number) => {
+  return request.post<ListResType<NoticeItem>>(`/notice/send_notice/${id}`);
+};

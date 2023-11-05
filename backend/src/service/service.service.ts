@@ -12,18 +12,41 @@ import { Repository } from 'typeorm';
 import { updateNoticeDto } from 'src/notice/dto/notice.dto';
 import { ServiceItem } from './vo/service.vo';
 import * as dayjs from 'dayjs';
+import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class ServiceService {
   @InjectRepository(Service)
   private serviceRepository: Repository<Service>;
+  private userRepository: Repository<User>;
 
   async create(createServiceDto: CreateServiceDto) {
-    return await this.serviceRepository.save(createServiceDto);
+    const isExist = await this.serviceRepository.findOneBy({
+      service_name: createServiceDto.service_name,
+    });
+    if (isExist) {
+      throw new HttpException('服务名重复', HttpStatus.OK);
+    }
+    const service = new Service();
+
+    service.administrator = createServiceDto.administrator;
+    service.service_name = createServiceDto.service_name;
+    service.service_status = createServiceDto.service_status;
+    const user = new User();
+
+    user.service_name = createServiceDto.service_name;
+    user.user_names = createServiceDto.administrator;
+
+    service.subscrible_user = user;
+
+    return await this.serviceRepository.save(service);
   }
 
   async findAll() {
-    const [list, count] = await this.serviceRepository.findAndCount();
+    const [list, count] = await this.serviceRepository.findAndCount({
+      relations: ['subscrible_user'],
+    });
+
     return {
       list: list.map((item) => {
         const vo = new ServiceItem();

@@ -20,6 +20,18 @@ import 'virtual:uno.css';
 
 const store = createStore(rootReducer);
 
+const socket = new WebSocket('ws://localhost:3100');
+
+socket.onopen = () => {
+  console.log('WebSocket connection established');
+
+  // 发送消息到服务器
+  socket.send('Hello from client');
+};
+
+socket.onmessage = function (event) {
+  console.log(event.data);
+};
 function Index() {
   const [lang, setLang] = useStorage('arco-lang', 'zh-CN');
   const [theme, setTheme] = useStorage('arco-theme', 'light');

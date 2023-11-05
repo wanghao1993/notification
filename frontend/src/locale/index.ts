@@ -73,6 +73,7 @@ const i18n = {
     'navbar.search.placeholder': '输入内容查询',
     Home: '通知管理',
     ServiceList: '服务管理',
+    UserList: '用户管理',
   },
 };
 
