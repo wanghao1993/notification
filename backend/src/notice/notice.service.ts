@@ -3,32 +3,62 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 
 import {
+  ChangeReadStatusDto,
   CreateNoticeDto,
   GetMyNoticeListDto,
   updateNoticeDto,
 } from './dto/notice.dto';
 import { NoticeList } from './entities/notice.entity';
 import { NoticeType } from './entities/notice_type.entity';
-import { NoticeStatus } from './enum/notice_enum';
+import { NoticeStatus, NoticeStatusText } from './enum/notice_enum';
 import { Service } from 'src/service/entities/service.entity';
 import { NoticeItemVo } from './vo/notice.vo';
 import * as dayjs from 'dayjs';
 import { WebsocketGatewayGateway } from 'src/websocket-gateway/websocket-gateway.gateway';
+import { NoticeReadStatus } from './entities/notice_read_status.entity';
+import { NoticeErrorMsg } from './notice.errormsg';
 
 @Injectable()
 export class NoticeService {
   constructor(
-    @InjectRepository(NoticeList)
-    private noticeRepository: Repository<NoticeList>,
+    @InjectRepository(NoticeList, 'mysql')
+    private readonly noticeRepository: Repository<NoticeList>,
 
-    @InjectRepository(Service)
-    private ServiceRep: Repository<Service>,
+    @InjectRepository(Service, 'mysql')
+    private readonly ServiceRep: Repository<Service>,
 
-    @InjectRepository(NoticeType)
-    private noticeTypeRepository: Repository<NoticeType>,
+    @InjectRepository(NoticeReadStatus, 'mongodbconnection')
+    private readonly NoticeReadRep: Repository<NoticeReadStatus>,
 
+    @InjectRepository(NoticeType, 'mysql')
+    private readonly noticeTypeRepository: Repository<NoticeType>,
     private readonly webSocketGateway: WebsocketGatewayGateway,
   ) {}
+
+  // 返回给前端的
+  getNoticeItem(
+    item: NoticeList,
+    listMap = {},
+    serviceIdNameMap = {},
+  ): NoticeItemVo {
+    const obj = new NoticeItemVo();
+    obj.title = item.title;
+    obj.content = item.content;
+    obj.create_time = dayjs(item.create_time).format('YYYY-MM-DD HH:mm:ss');
+    obj.creator = item.creator;
+    obj.id = item.id;
+    obj.notice_status = item.notice_status;
+    obj.notice_type = item.notice_type;
+    obj.notice_type_zh = listMap[item.notice_type];
+    obj.service_id = item.service_id.split(',').map((id) => +id);
+    obj.service_name = serviceIdNameMap[item.service_id]?.service_name;
+    obj.title = item.title;
+    obj.update_time = dayjs(item.update_time).format('YYYY-MM-DD HH:mm:ss');
+    obj.updator = item.updator;
+    obj.notice_status_text = NoticeStatusText.toString(item.notice_status);
+
+    return obj;
+  }
 
   // 新增通知
   async createNotice(reqBody: CreateNoticeDto) {
@@ -54,7 +84,7 @@ export class NoticeService {
       skip: skipCount,
       take: +query.pageSize,
       order: {
-        update_time: 'ASC',
+        update_time: 'desc',
       },
     });
 
@@ -88,20 +118,7 @@ export class NoticeService {
 
     const res: NoticeItemVo[] = [];
     noticeList.forEach((item) => {
-      const obj = new NoticeItemVo();
-
-      obj.content = item.content;
-      obj.create_time = dayjs(item.create_time).format('YYYY-MM-DD HH:mm:ss');
-      obj.creator = item.creator;
-      obj.id = item.id;
-      obj.notice_status = item.notice_status;
-      obj.notice_type = item.notice_type;
-      obj.notice_type_zh = listMap[item.notice_type];
-      obj.service_id = item.service_id.split(',').map((id) => +id);
-      obj.service_name = serviceIdNameMap[item.service_id]?.service_name;
-      obj.title = item.title;
-      obj.update_time = dayjs(item.update_time).format('YYYY-MM-DD HH:mm:ss');
-      obj.updator = item.updator;
+      const obj = this.getNoticeItem(item, listMap, serviceIdNameMap);
       res.push(obj);
     });
 
@@ -130,7 +147,7 @@ export class NoticeService {
         msg: '更新成功',
       };
     } else {
-      throw new HttpException('id不正确，没有此通知', HttpStatus.OK);
+      throw new HttpException(NoticeErrorMsg.NO_EXIST, HttpStatus.OK);
     }
   }
 
@@ -147,7 +164,7 @@ export class NoticeService {
         msg: '删除成功',
       };
     } else {
-      throw new HttpException('id不正确，没有此通知', HttpStatus.OK);
+      throw new HttpException(NoticeErrorMsg.NO_EXIST, HttpStatus.OK);
     }
   }
 
@@ -168,27 +185,113 @@ export class NoticeService {
     });
 
     if (res) {
-      const obj = new NoticeItemVo();
-
-      obj.content = res.content;
-      obj.create_time = dayjs(res.create_time).format('YYYY-MM-DD HH:mm:ss');
-      obj.creator = res.creator;
-      obj.id = res.id;
-      obj.notice_status = res.notice_status;
-      obj.notice_type = res.notice_type;
-      obj.service_id = res.service_id.split(',').map((id) => +id);
-      obj.title = res.title;
-      obj.update_time = dayjs(res.update_time).format('YYYY-MM-DD HH:mm:ss');
-      obj.updator = res.updator;
-
-      return obj;
+      return this.getNoticeItem(res);
     } else {
-      throw new HttpException('id不正确，没有此通知', HttpStatus.OK);
+      throw new HttpException(NoticeErrorMsg.NO_EXIST, HttpStatus.OK);
     }
   }
 
   // 发送通知
-  sendNotice = () => {
-    this.webSocketGateway.sendMessage('sxx');
+  sendNotice = async (notice_id: number) => {
+    const noticeDetail = await this.noticeRepository.findOneBy({
+      id: notice_id,
+    });
+
+    if (noticeDetail.notice_status !== NoticeStatus.revoke) {
+      if (noticeDetail) {
+        // 判断是否已经有发布的记录了
+        const isExist = await this.NoticeReadRep.findOneBy({
+          notice_id,
+        });
+
+        // 如果存在就重置通知和用户的已读的关系
+        let noticeRead;
+        if (isExist) {
+          this.NoticeReadRep.update(isExist.notice_id, {
+            read_user_list: [],
+          });
+        } else {
+          noticeRead = this.NoticeReadRep.create({
+            notice_id,
+            read_user_list: [],
+          });
+        }
+        this.webSocketGateway.sendMessage('sxx');
+        this.noticeRepository.update(notice_id, {
+          notice_status: NoticeStatus.released,
+        });
+
+        await this.NoticeReadRep.save(noticeRead);
+
+        return noticeRead;
+      } else {
+        throw new HttpException(NoticeErrorMsg.NO_EXIST, HttpStatus.OK);
+      }
+    } else {
+      throw new HttpException(
+        `${NoticeErrorMsg.ALREADY_REVOKE}`,
+        HttpStatus.OK,
+      );
+    }
+  };
+
+  // 撤销通知
+  revokeNotice = async (notice_id: number) => {
+    const noticeDetail = await this.noticeRepository.findOneBy({
+      id: notice_id,
+    });
+
+    if (noticeDetail) {
+      const res = await this.noticeRepository.update(notice_id, {
+        notice_status: NoticeStatus.revoke,
+      });
+
+      return res;
+    } else {
+      throw new HttpException(NoticeErrorMsg.NO_EXIST, HttpStatus.OK);
+    }
+  };
+
+  // 恢复
+  recoverNotice = async (notice_id: number) => {
+    const noticeDetail = await this.noticeRepository.findOneBy({
+      id: notice_id,
+    });
+
+    if (noticeDetail) {
+      await this.noticeRepository.update(notice_id, {
+        notice_status: NoticeStatus.no_release,
+      });
+    } else {
+      throw new HttpException(NoticeErrorMsg.NO_EXIST, HttpStatus.OK);
+    }
+  };
+
+  // 修改通知的阅读状态
+  changeReadStatus = async (data: ChangeReadStatusDto) => {
+    const { notice_id, user_id } = data;
+    const noticeDetail = await this.noticeRepository.findOneBy({
+      id: notice_id,
+    });
+
+    if (noticeDetail) {
+      await this.noticeRepository.update(notice_id, {
+        notice_status: NoticeStatus.no_release,
+      });
+      const noticeRead = await this.NoticeReadRep.findOneBy({
+        notice_id,
+      });
+
+      const { read_user_list = [] } = noticeRead;
+
+      if (read_user_list.includes(user_id)) return;
+
+      read_user_list.push(user_id);
+      this.NoticeReadRep.update(noticeRead.id, {
+        read_user_list,
+      });
+    } else {
+      throw new HttpException(NoticeErrorMsg.NO_EXIST, HttpStatus.OK);
+    }
   };
 }

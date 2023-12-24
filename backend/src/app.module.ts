@@ -9,10 +9,13 @@ import { Service } from './service/entities/service.entity';
 import { ServiceModule } from './service/service.module';
 import { User } from './user/entities/user.entity';
 import { UserModule } from './user/user.module';
+import { NoticeReadStatus } from './notice/entities/notice_read_status.entity';
 @Module({
   imports: [
     NoticeModule,
+
     TypeOrmModule.forRoot({
+      name: 'mysql',
       type: 'mysql',
       host: 'localhost',
       port: 3307,
@@ -24,10 +27,19 @@ import { UserModule } from './user/user.module';
       entities: [NoticeList, NoticeType, Service, User],
       poolSize: 10,
       connectorPackage: 'mysql2',
-      extra: {
-        authPlugin: 'sha256_password',
-      },
     }),
+
+    TypeOrmModule.forRoot({
+      name: 'mongodbconnection',
+      type: 'mongodb',
+      host: 'localhost',
+      port: 9000,
+      logging: true,
+      database: 't_notice_read_status',
+      entities: [NoticeReadStatus],
+      synchronize: true,
+    }),
+
     ServiceModule,
     UserModule,
   ],

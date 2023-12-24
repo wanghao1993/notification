@@ -10,6 +10,7 @@ import {
   Param,
 } from '@nestjs/common';
 import {
+  ChangeReadStatusDto,
   CreateNoticeDto,
   GetMyNoticeListDto,
   updateNoticeDto,
@@ -45,18 +46,40 @@ export class NoticeController {
     return this.noticeService.getNoticeTypeList();
   }
 
+  // 获取通知
   @Get('/detail')
   getNoticeById(@Query('id', ParseIntPipe) id: number) {
     return this.noticeService.getNoticeById(id);
   }
 
+  // 删除通知
   @Delete(':id')
   deleteNoticeById(@Param('id', ParseIntPipe) id: number) {
     return this.noticeService.deleteNotice(id);
   }
-
+  // 发送通知
   @Post('send_notice/:id')
   sendNotice(@Param('id', ParseIntPipe) id: number) {
-    return this.noticeService.sendNotice();
+    return this.noticeService.sendNotice(id);
+  }
+
+  // 撤销
+  @Put('revoke_notice/:id')
+  revokeNotice(@Param('id', ParseIntPipe) id: number) {
+    return this.noticeService.revokeNotice(id);
+  }
+
+  // 重新启用
+  @Put('recover_notice/:id')
+  recoverNotice(@Param('id', ParseIntPipe) id: number) {
+    return this.noticeService.recoverNotice(id);
+  }
+
+  // 重新启用
+  @Post('change_read_status/')
+  changeReadStatus(
+    @Body(MyValidatePipe) changeReadStatusDto: ChangeReadStatusDto,
+  ) {
+    return this.noticeService.changeReadStatus(changeReadStatusDto);
   }
 }

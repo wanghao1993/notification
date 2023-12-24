@@ -9,14 +9,13 @@ import { UpdateServiceDto } from './dto/update-service.dto';
 import { Service } from './entities/service.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { updateNoticeDto } from 'src/notice/dto/notice.dto';
 import { ServiceItem } from './vo/service.vo';
 import * as dayjs from 'dayjs';
 import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class ServiceService {
-  @InjectRepository(Service)
+  @InjectRepository(Service, 'mysql')
   private serviceRepository: Repository<Service>;
   private userRepository: Repository<User>;
 

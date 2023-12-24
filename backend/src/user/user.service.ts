@@ -6,7 +6,7 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
-  @InjectRepository(User)
+  @InjectRepository(User, 'mysql')
   private userRepository: Repository<User>;
   // 用户注册服务
   // 用户-服务

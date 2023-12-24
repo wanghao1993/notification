@@ -1,9 +1,11 @@
 import {
   deleteNoticeDetailById,
   getNoticeList,
+  recoverNoticeApi,
+  revokeNoticeApi,
   sendNoticeApi,
 } from '@/server/notice';
-import { Card, Modal, Popconfirm } from '@arco-design/web-react';
+import { Card, Modal, Popconfirm, Tag } from '@arco-design/web-react';
 import { Table, Button, Tooltip } from '@arco-design/web-react';
 import { useEffect, useState } from 'react';
 import CreateNoticeModal from './components/createNoticeModal';
@@ -12,6 +14,10 @@ import {
   IconEdit,
   IconSend,
   IconPlayCircle,
+  IconClockCircle,
+  IconCheckCircle,
+  IconUndo,
+  IconRefresh,
 } from '@arco-design/web-react/icon';
 import React from 'react';
 import { NoticeItem } from '@/server/notice.modal';
@@ -24,6 +30,31 @@ function Home() {
     {
       title: '通知类型',
       dataIndex: 'notice_type_zh',
+    },
+    {
+      title: '通知状态',
+      dataIndex: 'notice_status_text',
+      render: (_, record) => {
+        const IconList = {
+          0: {
+            icon: <IconClockCircle />,
+            color: 'gray',
+          },
+          1: {
+            icon: <IconCheckCircle />,
+            color: 'green',
+          },
+          2: {
+            icon: <IconUndo />,
+            color: 'orangered',
+          },
+        };
+        return (
+          <Tag color={IconList[record.notice_status].color} size="small">
+            {IconList[record.notice_status].icon} {record.notice_status_text}
+          </Tag>
+        );
+      },
     },
     {
       title: '创建人',
@@ -40,8 +71,17 @@ function Home() {
     {
       title: '操作',
       dataIndex: 'operations',
+      fixed: 'right',
+      width: 160,
       render: (_, record) => (
-        <div style={{ display: 'flex', cursor: 'pointer', fontSize: '16px' }}>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(5, 20%)',
+            cursor: 'pointer',
+            fontSize: '16px',
+          }}
+        >
           <Popconfirm
             focusLock
             title="删除确认"
@@ -49,7 +89,7 @@ function Home() {
             onOk={() => deleteNotice(record.id)}
           >
             <Tooltip content="删除">
-              <IconDelete style={{ color: 'red', marginRight: '10px' }} />
+              <IconDelete style={{ color: 'red' }} />
             </Tooltip>
           </Popconfirm>
 
@@ -57,21 +97,47 @@ function Home() {
             <IconEdit onClick={() => editNotice(record.id)} />
           </Tooltip>
 
-          <Popconfirm
-            focusLock
-            title="发送确认"
-            content={`确认发送通知吗? 发送后所有用户将会收到通知。`}
-            onOk={() => sendNotice(record.id)}
-            onCancel={() => {}}
-          >
-            <Tooltip content="发送">
-              <IconSend style={{ marginLeft: '10px', marginRight: '10px' }} />
-            </Tooltip>
-          </Popconfirm>
-
+          {record.notice_status === 0 ? (
+            <Popconfirm
+              focusLock
+              title="发送确认"
+              content={`确认发送通知吗? 发送后所有用户将会收到通知。`}
+              onOk={() => sendNotice(record.id)}
+            >
+              <Tooltip content="发送">
+                <IconSend />
+              </Tooltip>
+            </Popconfirm>
+          ) : null}
           <Tooltip content="测试">
             <IconPlayCircle onClick={() => preview(record)} />
           </Tooltip>
+
+          {record.notice_status < 2 ? (
+            <Popconfirm
+              focusLock
+              title="撤销确认"
+              content={`确认撤销此通知吗? 撤销后此通知将无法发送，已发送的将无法查看。`}
+              onOk={() => revokeNotice(record.id)}
+            >
+              <Tooltip content="撤销">
+                <IconUndo />
+              </Tooltip>
+            </Popconfirm>
+          ) : null}
+
+          {record.notice_status === 2 ? (
+            <Popconfirm
+              focusLock
+              title="恢复确认"
+              content={`确认恢复此通知吗? `}
+              onOk={() => recoverNotice(record.id)}
+            >
+              <Tooltip content="恢复">
+                <IconRefresh />
+              </Tooltip>
+            </Popconfirm>
+          ) : null}
         </div>
       ),
     },
@@ -103,7 +169,7 @@ function Home() {
 
   // 删除通知
   const deleteNotice = (id: number) => {
-    deleteNoticeDetailById(id).then((res) => {
+    deleteNoticeDetailById(id).then(() => {
       getList();
     });
   };
@@ -118,23 +184,32 @@ function Home() {
 
   // 发送通知
   const sendNotice = (id: number) => {
-    console.log(id, '发送通知');
-    sendNoticeApi(id);
+    sendNoticeApi(id).then(() => {
+      getList();
+    });
   };
 
+  // 撤销通知
+  const revokeNotice = (id: number) => {
+    revokeNoticeApi(id).then(() => {
+      getList();
+    });
+  };
+
+  // 恢复
+  const recoverNotice = (id: number) => {
+    recoverNoticeApi(id).then(() => {
+      getList();
+    });
+  };
   // 预览
 
-  const config = {
-    title: '22',
-    content: 'xxx',
-  };
   const [modal] = Modal.useModal();
 
   const preview = (notice: NoticeItem) => {
     if (notice.notice_type === 'notification') {
     } else if (notice.notice_type === 'loop_run') {
     } else if (notice.notice_type === 'modal') {
-      console.log(notice.content);
       modal.confirm({
         title: notice.title,
         content: 111,

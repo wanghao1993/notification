@@ -61,3 +61,14 @@ export class GetMyNoticeListDto {
 
   keyword: string;
 }
+
+export class ChangeReadStatusDto {
+  @IsNotEmpty({
+    message: '通知不存在',
+  })
+  notice_id: number;
+  @IsNotEmpty({
+    message: '用户名不可为空',
+  })
+  user_id: string;
+}

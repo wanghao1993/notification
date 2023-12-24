@@ -38,7 +38,17 @@ export const modifyNoticeApi = (data: UpdateNotice) => {
   return request.put<ListResType<NoticeItem>>(`/notice/update_notice`, data);
 };
 
-// 编辑通知
+// 发送通知
 export const sendNoticeApi = (id: number) => {
   return request.post<ListResType<NoticeItem>>(`/notice/send_notice/${id}`);
+};
+
+// 撤销通知
+export const revokeNoticeApi = (id: number) => {
+  return request.put<ListResType<NoticeItem>>(`/notice/revoke_notice/${id}`);
+};
+
+// 恢复通知
+export const recoverNoticeApi = (id: number) => {
+  return request.put<ListResType<NoticeItem>>(`/notice/recover_notice/${id}`);
 };
