@@ -3,12 +3,9 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from 'src/user/entities/user.entity';
 
 @Entity({
   name: 't_service_list',
@@ -25,13 +22,13 @@ export class Service {
   })
   service_name: string;
 
-  @OneToOne(() => User, (user) => user.subscrible_user, {
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-    cascade: true,
-  })
-  @JoinColumn()
-  subscrible_user: User;
+  // @OneToOne(() => User, (user) => user.subscrible_user, {
+  //   onDelete: 'CASCADE',
+  //   onUpdate: 'CASCADE',
+  //   cascade: true,
+  // })
+  // @JoinColumn()
+  // subscrible_user: User;
 
   @Column({
     comment: '服务状态',

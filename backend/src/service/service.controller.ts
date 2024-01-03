@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   ParseIntPipe,
@@ -13,7 +12,6 @@ import { ServiceService } from './service.service';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
 import { MyValidatePipe } from 'src/my-validate-pipe/my-validate.pipe';
-import { User } from 'src/user/entities/user.entity';
 
 @Controller('service')
 export class ServiceController {

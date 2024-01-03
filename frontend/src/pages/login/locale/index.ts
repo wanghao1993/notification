@@ -8,7 +8,7 @@ const i18n = {
     'login.form.password.placeholder': 'Password: admin',
     'login.form.rememberPassword': 'Remember password',
     'login.form.forgetPassword': 'Forgot password',
-    'login.form.login': 'login',
+    'login.form.login': 'login/register',
     'login.form.register': 'register account',
     'login.banner.slogan1': 'Out-of-the-box high-quality template',
     'login.banner.subSlogan1':
@@ -28,7 +28,7 @@ const i18n = {
     'login.form.password.placeholder': '密码：admin',
     'login.form.rememberPassword': '记住密码',
     'login.form.forgetPassword': '忘记密码',
-    'login.form.login': '登录',
+    'login.form.login': '登录/注册',
     'login.form.register': '注册账号',
     'login.banner.slogan1': '开箱即用的高质量模板',
     'login.banner.subSlogan1': '丰富的的页面模板，覆盖大多数典型业务场景',

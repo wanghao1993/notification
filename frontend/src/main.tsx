@@ -1,7 +1,7 @@
 import './style/global.less';
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { createStore } from 'redux';
+import { legacy_createStore as createStore } from 'redux';
 import { Provider } from 'react-redux';
 import { ConfigProvider } from '@arco-design/web-react';
 import zhCN from '@arco-design/web-react/es/locale/zh-CN';

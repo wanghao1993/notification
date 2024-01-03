@@ -1,30 +1,31 @@
-import { Service } from 'src/service/entities/service.entity';
+import { UserStatus } from 'src/enum/userStatus';
 import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToOne,
+  PrimaryColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity({
-  name: 't_service_user_list',
+  name: 't_user',
 })
 export class User {
-  @PrimaryGeneratedColumn({
-    comment: '服务ID',
+  @PrimaryColumn({
+    comment: '用户名',
   })
-  service_id: number;
+  user_name: string;
 
-  @Column()
-  service_name: string;
+  @Column({
+    comment: '密码',
+  })
+  password: string;
 
-  @OneToOne(() => Service, (service) => service.subscrible_user)
-  subscrible_user: Service;
-
-  @Column()
-  user_names: string;
+  @Column({
+    comment: '用户状态',
+  })
+  status: UserStatus;
 
   @CreateDateColumn()
   create_time: Date;

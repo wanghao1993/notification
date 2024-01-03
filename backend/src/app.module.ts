@@ -6,14 +6,22 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { NoticeList } from './notice/entities/notice.entity';
 import { NoticeType } from './notice/entities/notice_type.entity';
 import { Service } from './service/entities/service.entity';
+import { JwtModule } from '@nestjs/jwt';
 import { ServiceModule } from './service/service.module';
+import { UserServer } from './user/entities/user.server.entity';
 import { User } from './user/entities/user.entity';
 import { UserModule } from './user/user.module';
 import { NoticeReadStatus } from './notice/entities/notice_read_status.entity';
 @Module({
   imports: [
     NoticeModule,
-
+    JwtModule.register({
+      global: true,
+      secret: 'uuid_x1_x2_x3',
+      signOptions: {
+        expiresIn: '24h',
+      },
+    }),
     TypeOrmModule.forRoot({
       name: 'mysql',
       type: 'mysql',
@@ -24,7 +32,7 @@ import { NoticeReadStatus } from './notice/entities/notice_read_status.entity';
       database: 'notice',
       synchronize: true,
       logging: false,
-      entities: [NoticeList, NoticeType, Service, User],
+      entities: [NoticeList, NoticeType, UserServer, User],
       poolSize: 10,
       connectorPackage: 'mysql2',
     }),

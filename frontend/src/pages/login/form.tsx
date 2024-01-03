@@ -14,6 +14,7 @@ import useStorage from '@/utils/useStorage';
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
 import styles from './style/index.module.less';
+import { loginApi } from '@/server/user';
 
 export default function LoginForm() {
   const formRef = useRef<FormInstance>();
@@ -42,15 +43,14 @@ export default function LoginForm() {
   function login(params) {
     setErrorMessage('');
     setLoading(true);
-    axios
-      .post('/api/user/login', params)
+    loginApi(params)
       .then((res) => {
-        const { status, msg } = res.data;
-        if (status === 'ok') {
-          afterLoginSuccess(params);
-        } else {
-          setErrorMessage(msg || t['login.form.login.errMsg']);
-        }
+        // const { status, msg } = res.data;
+        // if (status === 'ok') {
+        //   afterLoginSuccess(params);
+        // } else {
+        //   setErrorMessage(msg || t['login.form.login.errMsg']);
+        // }
       })
       .finally(() => {
         setLoading(false);
@@ -84,10 +84,10 @@ export default function LoginForm() {
         className={styles['login-form']}
         layout="vertical"
         ref={formRef}
-        initialValues={{ userName: 'admin', password: 'admin' }}
+        initialValues={{ user_name: 'admin', password: 'admin' }}
       >
         <Form.Item
-          field="userName"
+          field="user_name"
           rules={[{ required: true, message: t['login.form.userName.errMsg'] }]}
         >
           <Input
@@ -115,13 +115,6 @@ export default function LoginForm() {
           </div>
           <Button type="primary" long onClick={onSubmitClick} loading={loading}>
             {t['login.form.login']}
-          </Button>
-          <Button
-            type="text"
-            long
-            className={styles['login-form-register-btn']}
-          >
-            {t['login.form.register']}
           </Button>
         </Space>
       </Form>

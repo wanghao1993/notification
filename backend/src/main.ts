@@ -4,6 +4,7 @@ import { HttpExceptionFilter } from './my-http-exception-filter/my-http-exceptio
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { TransformInterceptor } from './transform/transform.interceptor';
 import { WsAdapter } from '@nestjs/platform-ws';
+import { LoginGuard } from './login.guard';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
@@ -17,6 +18,8 @@ async function bootstrap() {
     optionsSuccessStatus: 200,
   });
   app.useGlobalFilters(new HttpExceptionFilter());
+
+  app.useGlobalGuards(new LoginGuard());
 
   app.useGlobalInterceptors(new TransformInterceptor());
   const options = new DocumentBuilder()

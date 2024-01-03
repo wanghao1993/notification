@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
 import { Service } from './entities/service.entity';
@@ -11,13 +6,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ServiceItem } from './vo/service.vo';
 import * as dayjs from 'dayjs';
-import { User } from 'src/user/entities/user.entity';
+import { UserServer } from 'src/user/entities/user.server.entity';
 
 @Injectable()
 export class ServiceService {
   @InjectRepository(Service, 'mysql')
   private serviceRepository: Repository<Service>;
-  private userRepository: Repository<User>;
 
   async create(createServiceDto: CreateServiceDto) {
     const isExist = await this.serviceRepository.findOneBy({
@@ -31,12 +25,12 @@ export class ServiceService {
     service.administrator = createServiceDto.administrator;
     service.service_name = createServiceDto.service_name;
     service.service_status = createServiceDto.service_status;
-    const user = new User();
+    const user = new UserServer();
 
     user.service_name = createServiceDto.service_name;
     user.user_names = createServiceDto.administrator;
 
-    service.subscrible_user = user;
+    // service.subscrible_user = user;
 
     return await this.serviceRepository.save(service);
   }
