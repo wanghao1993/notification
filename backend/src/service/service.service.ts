@@ -5,8 +5,8 @@ import { Service } from './entities/service.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ServiceItem } from './vo/service.vo';
-import * as dayjs from 'dayjs';
 import { UserServer } from 'src/user/entities/user.server.entity';
+import { formateDate } from 'src/shared/date_format';
 
 @Injectable()
 export class ServiceService {
@@ -43,12 +43,12 @@ export class ServiceService {
     return {
       list: list.map((item) => {
         const vo = new ServiceItem();
-        vo.create_time = dayjs(item.create_time).format('YYYY-MM-DD HH:mm:ss');
+        vo.create_time = formateDate(item.create_time);
         vo.administrator = item.administrator.split(',');
         vo.service_id = item.service_id;
         vo.service_name = item.service_name;
         vo.service_status = item.service_status;
-        vo.update_time = dayjs(item.update_time).format('YYYY-MM-DD HH:mm:ss');
+        vo.update_time = formateDate(item.update_time);
         return vo;
       }),
       total_count: count,

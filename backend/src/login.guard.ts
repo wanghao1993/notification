@@ -8,13 +8,14 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { Observable } from 'rxjs';
-
-const whiteListUrl = ['/user/login'];
+import { jwtConstants } from './auth';
 
 @Injectable()
-export class LoginGuard implements CanActivate {
+export class RequestGuard implements CanActivate {
   @Inject(JwtService)
-  private jwtService: JwtService;
+  private jwtService: JwtService = new JwtService();
+
+  private whiteListUrl: string[] = ['/user/login', '/'];
 
   canActivate(
     context: ExecutionContext,
@@ -23,7 +24,7 @@ export class LoginGuard implements CanActivate {
 
     const url = request.url;
 
-    if (whiteListUrl.includes(url)) return true;
+    if (this.whiteListUrl.includes(url)) return true;
     const authorization = request.header('authorization') || '';
 
     const bearer = authorization.split(' ');
@@ -32,11 +33,10 @@ export class LoginGuard implements CanActivate {
       throw new UnauthorizedException('登录 token 错误');
     }
 
-    const token = bearer[1];
-
     try {
-      const info = this.jwtService.verify(token);
-      (request as any).user = info.user;
+      const token = bearer[1];
+
+      this.jwtService.verify(token, jwtConstants);
       return true;
     } catch (e) {
       throw new UnauthorizedException('登录 token 失效，请重新登录');

@@ -9,12 +9,10 @@ import {
   Button,
 } from '@arco-design/web-react';
 import {
-
   IconSunFill,
   IconMoonFill,
   IconSettings,
   IconPoweroff,
-
 } from '@arco-design/web-react/icon';
 import { useSelector, useDispatch } from 'react-redux';
 import { GlobalState } from '@/store';
@@ -34,13 +32,12 @@ function Navbar({ show }: { show: boolean }) {
   const userInfo = useSelector((state: GlobalState) => state.userInfo);
   const dispatch = useDispatch();
 
-  const [_, setUserStatus] = useStorage('userStatus');
   const [role, setRole] = useStorage('userRole', 'admin');
 
   const { setLang, lang, theme, setTheme } = useContext(GlobalContext);
 
   function logout() {
-    setUserStatus('logout');
+    localStorage.removeItem('token');
     window.location.href = '/login';
   }
 
@@ -51,18 +48,6 @@ function Navbar({ show }: { show: boolean }) {
       Message.info(`You clicked ${key}`);
     }
   }
-
-  useEffect(() => {
-    dispatch({
-      type: 'update-userInfo',
-      payload: {
-        userInfo: {
-          ...userInfo,
-          permissions: generatePermission(role),
-        },
-      },
-    });
-  }, [role]);
 
   if (!show) {
     return (
@@ -149,9 +134,7 @@ function Navbar({ show }: { show: boolean }) {
         {userInfo && (
           <li>
             <Dropdown droplist={droplist} position="br">
-              <Avatar size={32} style={{ cursor: 'pointer' }}>
-                <img alt="avatar" src={userInfo.avatar} />
-              </Avatar>
+              {userInfo.user_name}
             </Dropdown>
           </li>
         )}

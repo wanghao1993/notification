@@ -9,6 +9,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserStatus } from 'src/enum/userStatus';
 import { User } from './entities/user.entity';
+import { UserProfile } from './vo/user.vo';
+import { formateDate } from 'src/shared/date_format';
 
 @Injectable()
 export class UserService {
@@ -45,18 +47,23 @@ export class UserService {
 
   async getUserList(query: GetUserListDto) {
     const skipCount = (+query.page - 1) * +query.pageSize;
-    const [userList, totalCount] = await this.userServerRepository.findAndCount(
-      {
-        skip: skipCount,
-        take: +query.pageSize,
-        order: {
-          update_time: 'ASC',
-        },
+    const [userList, totalCount] = await this.userRepository.findAndCount({
+      skip: skipCount,
+      take: +query.pageSize,
+      order: {
+        update_time: 'ASC',
       },
-    );
-
+    });
     return {
-      list: userList,
+      list: userList.map((item) => {
+        const user = new UserProfile();
+        user.is_admin = item.is_admin;
+        user.status = item.status;
+        user.user_name = item.user_name;
+        user.created_time = formateDate(item.create_time);
+        user.update_time = formateDate(item.update_time);
+        return user;
+      }),
       total_count: totalCount,
     };
   }
@@ -89,6 +96,29 @@ export class UserService {
     try {
       await this.userRepository.save(newUser);
       return newUser;
+    } catch (e) {
+      throw new HttpException(e, HttpStatus.OK);
+    }
+  }
+
+  // 获取个人信息
+  async getProfile(user_name: string) {
+    try {
+      const fundUser = await this.userRepository.findOneBy({
+        user_name,
+      });
+
+      if (fundUser) {
+        const res = new UserProfile();
+        res.status = fundUser.status;
+        res.user_name = fundUser.user_name;
+        res.is_admin = !!fundUser.is_admin;
+        res.created_time = formateDate(fundUser.create_time);
+        res.update_time = formateDate(fundUser.update_time);
+        return res;
+      } else {
+        throw new HttpException('当前用户不存在', HttpStatus.OK);
+      }
     } catch (e) {
       throw new HttpException(e, HttpStatus.OK);
     }

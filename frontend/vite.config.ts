@@ -8,7 +8,10 @@ import UnoCSS from 'unocss/vite';
 // https://vitejs.dev/config/
 export default defineConfig({
   resolve: {
-    alias: [{ find: '@', replacement: '/src' }],
+    alias: [
+      { find: '@', replacement: '/src' },
+      { find: '#', replacement: '/types' },
+    ],
   },
   plugins: [
     UnoCSS(),

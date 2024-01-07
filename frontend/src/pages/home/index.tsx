@@ -20,12 +20,13 @@ import {
   IconRefresh,
 } from '@arco-design/web-react/icon';
 import React from 'react';
-import { NoticeItem } from '@/server/notice.modal';
+import { NoticeType } from './../../types/notice.type';
 function Home() {
   const columns = [
     {
       title: '标题',
       dataIndex: 'title',
+      fixed: 'left',
     },
     {
       title: '通知类型',
@@ -206,7 +207,7 @@ function Home() {
 
   const [modal] = Modal.useModal();
 
-  const preview = (notice: NoticeItem) => {
+  const preview = (notice: NoticeType.NoticeItem) => {
     if (notice.notice_type === 'notification') {
     } else if (notice.notice_type === 'loop_run') {
     } else if (notice.notice_type === 'modal') {

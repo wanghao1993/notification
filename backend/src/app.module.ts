@@ -12,16 +12,11 @@ import { UserServer } from './user/entities/user.server.entity';
 import { User } from './user/entities/user.entity';
 import { UserModule } from './user/user.module';
 import { NoticeReadStatus } from './notice/entities/notice_read_status.entity';
+import { jwtConstants } from './auth';
 @Module({
   imports: [
     NoticeModule,
-    JwtModule.register({
-      global: true,
-      secret: 'uuid_x1_x2_x3',
-      signOptions: {
-        expiresIn: '24h',
-      },
-    }),
+
     TypeOrmModule.forRoot({
       name: 'mysql',
       type: 'mysql',
@@ -32,7 +27,7 @@ import { NoticeReadStatus } from './notice/entities/notice_read_status.entity';
       database: 'notice',
       synchronize: true,
       logging: false,
-      entities: [NoticeList, NoticeType, UserServer, User],
+      entities: [NoticeList, NoticeType, UserServer, User, Service],
       poolSize: 10,
       connectorPackage: 'mysql2',
     }),
@@ -50,6 +45,13 @@ import { NoticeReadStatus } from './notice/entities/notice_read_status.entity';
 
     ServiceModule,
     UserModule,
+    JwtModule.register({
+      global: true,
+      secret: jwtConstants.secret,
+      signOptions: {
+        expiresIn: '1d',
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

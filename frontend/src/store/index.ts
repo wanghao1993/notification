@@ -2,13 +2,10 @@ import defaultSettings from '../settings.json';
 export interface GlobalState {
   settings?: typeof defaultSettings;
   userInfo?: {
-    name?: string;
-    avatar?: string;
-    job?: string;
-    organization?: string;
-    location?: string;
-    email?: string;
-    permissions: Record<string, string[]>;
+    user_name: string;
+    status: number;
+    is_admin: boolean;
+    permissions: Record<string, unknown>;
   };
   userLoading?: boolean;
 }
@@ -16,6 +13,9 @@ export interface GlobalState {
 const initialState: GlobalState = {
   settings: defaultSettings,
   userInfo: {
+    user_name: '',
+    status: 1,
+    is_admin: false,
     permissions: {},
   },
 };

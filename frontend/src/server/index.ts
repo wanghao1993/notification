@@ -16,7 +16,7 @@ interface Result {
 interface ResultData<T = any> extends Result {
   data?: T;
 }
-const URL: string = 'http://localhost:3000';
+const URL = 'http://localhost:3000';
 enum RequestEnums {
   TIMEOUT = 20000,
   OVERDUE = 600, // 登录失效
@@ -49,9 +49,9 @@ class RequestHttp {
         const token = localStorage.getItem('token') || '';
         return {
           ...config,
-          //   headers: {
-          //     'x-access-token': token, // 请求头中携带token信息
-          //   }
+          headers: {
+            authorization: token, // 请求头中携带token信息
+          },
         };
       },
       (error: AxiosError) => {
@@ -66,15 +66,7 @@ class RequestHttp {
      */
     this.service.interceptors.response.use(
       (response: AxiosResponse) => {
-        const { data, config } = response; // 解构
-        if (data.code === RequestEnums.OVERDUE) {
-          // 登录信息失效，应跳转到登录页面，并清空本地的token
-          localStorage.setItem('token', '');
-          // router.replace({
-          //   path: '/login'
-          // })
-          return Promise.reject(data);
-        }
+        const { data } = response; // 解构
         // 全局错误信息拦截（防止下载文件得时候返回数据流，没有code，直接报错）
         if (data.code && data.code !== RequestEnums.SUCCESS) {
           Message.error(data.message); // 此处也可以使用组件提示报错信息
@@ -84,6 +76,16 @@ class RequestHttp {
       },
       (error: AxiosError) => {
         const { response } = error;
+
+        if (response.status === 401) {
+          Message.error('token过期或错误，将重新登陆');
+          localStorage.setItem('token', '');
+          setTimeout(() => {
+            location.href = '/login';
+          }, 3000);
+          return;
+        }
+
         if (response) {
           this.handleCode(response.status);
         }

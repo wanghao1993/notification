@@ -42,8 +42,8 @@ export class Service {
   administrator: string;
 
   @CreateDateColumn()
-  create_time: string;
+  create_time: Date;
 
   @UpdateDateColumn()
-  update_time: string;
+  update_time: Date;
 }

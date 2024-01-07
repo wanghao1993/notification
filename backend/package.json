@@ -25,6 +25,7 @@
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/mapped-types": "*",
     "@nestjs/mongoose": "^10.0.2",
+    "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/platform-socket.io": "^10.2.8",
     "@nestjs/platform-ws": "^10.2.8",
@@ -37,6 +38,7 @@
     "dayjs": "^1.11.10",
     "mongoose": "^8.0.3",
     "mysql2": "^3.6.0",
+    "passport": "^0.7.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
     "typeorm": "^0.3.17"

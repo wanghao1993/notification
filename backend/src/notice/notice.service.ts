@@ -13,10 +13,10 @@ import { NoticeType } from './entities/notice_type.entity';
 import { NoticeStatus, NoticeStatusText } from './enum/notice_enum';
 import { Service } from 'src/service/entities/service.entity';
 import { NoticeItemVo } from './vo/notice.vo';
-import * as dayjs from 'dayjs';
 import { WebsocketGatewayGateway } from 'src/websocket-gateway/websocket-gateway.gateway';
 import { NoticeReadStatus } from './entities/notice_read_status.entity';
 import { NoticeErrorMsg } from './notice.errormsg';
+import { formateDate } from 'src/shared/date_format';
 
 @Injectable()
 export class NoticeService {
@@ -44,7 +44,7 @@ export class NoticeService {
     const obj = new NoticeItemVo();
     obj.title = item.title;
     obj.content = item.content;
-    obj.create_time = dayjs(item.create_time).format('YYYY-MM-DD HH:mm:ss');
+    obj.create_time = formateDate(item.create_time);
     obj.creator = item.creator;
     obj.id = item.id;
     obj.notice_status = item.notice_status;
@@ -53,7 +53,7 @@ export class NoticeService {
     obj.service_id = item.service_id.split(',').map((id) => +id);
     obj.service_name = serviceIdNameMap[item.service_id]?.service_name;
     obj.title = item.title;
-    obj.update_time = dayjs(item.update_time).format('YYYY-MM-DD HH:mm:ss');
+    obj.update_time = formateDate(item.update_time);
     obj.updator = item.updator;
     obj.notice_status_text = NoticeStatusText.toString(item.notice_status);
 

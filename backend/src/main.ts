@@ -4,7 +4,7 @@ import { HttpExceptionFilter } from './my-http-exception-filter/my-http-exceptio
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { TransformInterceptor } from './transform/transform.interceptor';
 import { WsAdapter } from '@nestjs/platform-ws';
-import { LoginGuard } from './login.guard';
+import { RequestGuard } from './login.guard';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
@@ -19,8 +19,6 @@ async function bootstrap() {
   });
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  app.useGlobalGuards(new LoginGuard());
-
   app.useGlobalInterceptors(new TransformInterceptor());
   const options = new DocumentBuilder()
     .setTitle('通知系统')
@@ -30,6 +28,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('docs', app, document);
   app.useWebSocketAdapter(new WsAdapter(app));
+
+  app.useGlobalGuards(new RequestGuard());
+
   await app.listen(3000);
 }
 bootstrap();

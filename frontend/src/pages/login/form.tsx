@@ -14,7 +14,9 @@ import useStorage from '@/utils/useStorage';
 import useLocale from '@/utils/useLocale';
 import locale from './locale';
 import styles from './style/index.module.less';
-import { loginApi } from '@/server/user';
+import { getProfile, loginApi } from '@/server/user';
+import { useDispatch } from 'react-redux';
+import { generatePermission } from '@/routes';
 
 export default function LoginForm() {
   const formRef = useRef<FormInstance>();
@@ -25,6 +27,8 @@ export default function LoginForm() {
 
   const t = useLocale(locale);
 
+  const dispatch = useDispatch();
+
   const [rememberPassword, setRememberPassword] = useState(!!loginParams);
 
   function afterLoginSuccess(params) {
@@ -34,23 +38,23 @@ export default function LoginForm() {
     } else {
       removeLoginParams();
     }
-    // 记录登录状态
-    localStorage.setItem('userStatus', 'login');
-    // 跳转首页
+
     window.location.href = '/';
+    // 跳转首页
   }
+
+  const [token, setStorageValue] = useStorage('token');
 
   function login(params) {
     setErrorMessage('');
     setLoading(true);
     loginApi(params)
       .then((res) => {
-        // const { status, msg } = res.data;
-        // if (status === 'ok') {
-        //   afterLoginSuccess(params);
-        // } else {
-        //   setErrorMessage(msg || t['login.form.login.errMsg']);
-        // }
+        if (res.code === 200) {
+          setStorageValue(res.data);
+
+          afterLoginSuccess(params);
+        }
       })
       .finally(() => {
         setLoading(false);

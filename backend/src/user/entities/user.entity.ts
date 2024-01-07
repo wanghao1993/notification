@@ -27,6 +27,12 @@ export class User {
   })
   status: UserStatus;
 
+  @Column({
+    comment: '是否是管理员',
+    default: false,
+  })
+  is_admin: boolean;
+
   @CreateDateColumn()
   create_time: Date;
 

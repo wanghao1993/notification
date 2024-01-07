@@ -5,6 +5,7 @@ import {
   Inject,
   Post,
   Query,
+  Req,
   Res,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -15,7 +16,9 @@ import {
 } from './dto/user.dto';
 import { MyValidatePipe } from 'src/my-validate-pipe/my-validate.pipe';
 import { JwtService } from '@nestjs/jwt';
-import { Response } from 'express';
+import { ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { Request } from 'express';
+import { jwtConstants } from 'src/auth';
 
 @Controller('user')
 export class UserController {
@@ -29,29 +32,53 @@ export class UserController {
     return await this.userService.register(data);
   }
 
+  @ApiOperation({ summary: '获取用户列表' })
+  @ApiQuery({
+    name: 'page',
+    type: String,
+    required: true,
+    description: '当前第几页',
+  })
+  @ApiQuery({
+    name: 'pageSize',
+    type: String,
+    required: true,
+    description: '当前第每页多少条',
+  })
+  @ApiQuery({
+    name: 'keyword',
+    type: String,
+    required: false,
+    description: '关键字搜索',
+  })
   @Get('list')
   async getUserList(@Query(MyValidatePipe) data: GetUserListDto) {
     return await this.userService.getUserList(data);
   }
 
   @Post('login')
-  async userLogin(
-    @Body(MyValidatePipe) data: UserLoginDto,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async userLogin(@Body(MyValidatePipe) data: UserLoginDto) {
     const user = await this.userService.userLogin(data);
-    const token = await this.jwtService.signAsync({
-      user: {
-        user_name: user.user_name,
-      },
+    const token = this.jwtService.sign({
+      user: user.user_name,
     });
 
     if (user) {
-      res.setHeader('token', token);
-      return '登录成功';
+      return 'bearer ' + token;
     } else {
       return '登录失败';
     }
+  }
+
+  @Get('profile')
+  async getUserProfile(@Req() request: Request) {
+    const authorization = request.headers['authorization'];
+
+    const token = authorization.split(' ')[1];
+
+    const res = this.jwtService.verify(token, jwtConstants);
+    console.log(res);
+    return await this.userService.getProfile(res.user);
   }
 
   // @Post('remove_service')

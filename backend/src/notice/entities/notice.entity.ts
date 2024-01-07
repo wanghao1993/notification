@@ -6,7 +6,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { NoticeStatus } from '../enum/notice_enum';
-import * as dayjs from 'dayjs';
 
 @Entity({
   name: 't_notice_list',
@@ -57,13 +56,9 @@ export class NoticeList {
   })
   notice_status: NoticeStatus;
 
-  @CreateDateColumn({
-    default: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-  })
+  @CreateDateColumn()
   create_time: Date;
 
-  @UpdateDateColumn({
-    default: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-  })
+  @UpdateDateColumn()
   update_time: Date;
 }

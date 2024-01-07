@@ -18,13 +18,4 @@ export class AppController {
   home(): number {
     return 200;
   }
-
-  @Get('/getToken')
-  getToken(@Res({ passthrough: true }) response: Response): number {
-    const token = this.jwtService.sign({
-      count: 1,
-    });
-    response.setHeader('token', token);
-    return 200;
-  }
 }
