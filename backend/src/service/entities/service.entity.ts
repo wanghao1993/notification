@@ -22,14 +22,6 @@ export class Service {
   })
   service_name: string;
 
-  // @OneToOne(() => User, (user) => user.subscrible_user, {
-  //   onDelete: 'CASCADE',
-  //   onUpdate: 'CASCADE',
-  //   cascade: true,
-  // })
-  // @JoinColumn()
-  // subscrible_user: User;
-
   @Column({
     comment: '服务状态',
   })

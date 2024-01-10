@@ -16,7 +16,9 @@ import { useEffect, useRef, useState } from 'react';
 import Markdown from '@/components/Markdown';
 import { getServiceList } from '@/server/service';
 import { serviceStatus } from '@/pages/service/constant';
-// Initialize a markdown parser
+import { useSelector } from 'react-redux';
+import React from 'react';
+import { GlobalState } from '@/store';
 const FormItem = Form.Item;
 export default function NoticeModal(props: {
   visible: boolean;
@@ -24,6 +26,8 @@ export default function NoticeModal(props: {
   setVisible: (boolean) => void;
 }) {
   const [title, setTitle] = useState('新增通知');
+
+  const userInfo = useSelector((state: GlobalState) => state.userInfo);
 
   const formRef = useRef<FormInstance>();
 
@@ -47,7 +51,6 @@ export default function NoticeModal(props: {
 
     const params = {
       ...valus,
-      creator: 'isaac.wang1', // todo
       content_html: markdownValue.html,
       id: props.id,
     };

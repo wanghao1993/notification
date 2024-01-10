@@ -13,9 +13,11 @@ import { User } from './user/entities/user.entity';
 import { UserModule } from './user/user.module';
 import { NoticeReadStatus } from './notice/entities/notice_read_status.entity';
 import { jwtConstants } from './auth';
+import { UtilsModule } from './utils/index.module';
 @Module({
   imports: [
     NoticeModule,
+    UtilsModule,
 
     TypeOrmModule.forRoot({
       name: 'mysql',

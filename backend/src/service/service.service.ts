@@ -30,15 +30,11 @@ export class ServiceService {
     user.service_name = createServiceDto.service_name;
     user.user_names = createServiceDto.administrator;
 
-    // service.subscrible_user = user;
-
     return await this.serviceRepository.save(service);
   }
 
   async findAll() {
-    const [list, count] = await this.serviceRepository.findAndCount({
-      relations: ['subscrible_user'],
-    });
+    const [list, count] = await this.serviceRepository.findAndCount();
 
     return {
       list: list.map((item) => {

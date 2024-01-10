@@ -20,9 +20,6 @@ export class UserServer {
   @Column()
   service_name: string;
 
-  // @OneToOne(() => Service, (service) => service.subscrible_user)
-  // subscrible_user: Service;
-
   @Column()
   user_names: string;
 

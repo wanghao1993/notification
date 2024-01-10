@@ -8,6 +8,7 @@ import {
   Put,
   Query,
   Param,
+  Headers,
 } from '@nestjs/common';
 import {
   ChangeReadStatusDto,
@@ -22,8 +23,11 @@ import { MyValidatePipe } from 'src/my-validate-pipe/my-validate.pipe';
 export class NoticeController {
   constructor(private readonly noticeService: NoticeService) {}
   @Post('create')
-  create(@Body(MyValidatePipe) createNoticeBody: CreateNoticeDto) {
-    return this.noticeService.createNotice(createNoticeBody);
+  create(
+    @Body(MyValidatePipe) createNoticeBody: CreateNoticeDto,
+    @Headers('authorization') authorization: string,
+  ) {
+    return this.noticeService.createNotice(createNoticeBody, authorization);
   }
 
   @Get('list')
@@ -32,8 +36,11 @@ export class NoticeController {
   }
 
   @Put('update_notice')
-  updateNotice(@Body(MyValidatePipe) updateNoticeData: updateNoticeDto) {
-    return this.noticeService.updateNotice(updateNoticeData);
+  updateNotice(
+    @Body(MyValidatePipe) updateNoticeData: updateNoticeDto,
+    @Headers('authorization') authorization: string,
+  ) {
+    return this.noticeService.updateNotice(updateNoticeData, authorization);
   }
 
   @Delete('delete')
