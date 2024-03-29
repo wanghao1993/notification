@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
 import { Service } from './entities/service.entity';
@@ -7,24 +7,32 @@ import { Repository } from 'typeorm';
 import { ServiceItem } from './vo/service.vo';
 import { UserServer } from 'src/user/entities/user.server.entity';
 import { formateDate } from 'src/shared/date_format';
-
+import { JwtUtil } from 'src/utils';
 @Injectable()
 export class ServiceService {
+  constructor(private readonly jwtUtil: JwtUtil) {}
   @InjectRepository(Service, 'mysql')
   private serviceRepository: Repository<Service>;
 
-  async create(createServiceDto: CreateServiceDto) {
+  async create(createServiceDto: CreateServiceDto, authorization: string) {
     const isExist = await this.serviceRepository.findOneBy({
       service_name: createServiceDto.service_name,
     });
+
     if (isExist) {
       throw new HttpException('服务名重复', HttpStatus.OK);
     }
     const service = new Service();
 
-    service.administrator = createServiceDto.administrator;
+    // 默认为登陆人
+    service.administrator =
+      createServiceDto.administrator ||
+      this.jwtUtil.getUserFromToken(authorization).user;
     service.service_name = createServiceDto.service_name;
     service.service_status = createServiceDto.service_status;
+    if (!service.administrator) {
+      throw new HttpException('管理员不能为空', HttpStatus.OK);
+    }
     const user = new UserServer();
 
     user.service_name = createServiceDto.service_name;

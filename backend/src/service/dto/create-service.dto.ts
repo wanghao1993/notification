@@ -7,9 +7,6 @@ export class CreateServiceDto {
   })
   service_name: string;
 
-  @IsNotEmpty({
-    message: '管理员',
-  })
   administrator: string;
 
   @IsNotEmpty({

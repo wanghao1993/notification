@@ -40,7 +40,6 @@ export default function NoticeModal(props: {
 
       setValue({
         text: res.data.content,
-        html: res.data.content_html,
       });
     });
   };
@@ -51,7 +50,6 @@ export default function NoticeModal(props: {
 
     const params = {
       ...valus,
-      content_html: markdownValue.html,
       id: props.id,
     };
     if (props.id) {
@@ -64,14 +62,12 @@ export default function NoticeModal(props: {
     props.setVisible(false);
   };
 
-  const [markdownValue, setValue] = useState<{ html: string; text: string }>({
-    html: '',
+  const [markdownValue, setValue] = useState<{ text: string }>({
     text: '',
   });
 
-  const handleEditorChange = ({ html, text }) => {
+  const handleEditorChange = ({ text }) => {
     setValue({
-      html,
       text,
     });
     formRef.current.setFieldsValue({
@@ -128,7 +124,7 @@ export default function NoticeModal(props: {
             wrapperCol={{ span: 20 }}
             labelCol={{ span: 4 }}
             initialValues={{
-              notice_type: 'notification',
+              notice_type: '1',
             }}
             ref={formRef}
             scrollToFirstError

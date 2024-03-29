@@ -29,7 +29,6 @@ export class User {
 
   @Column({
     comment: '是否是管理员',
-    default: false,
   })
   is_admin: boolean;
 

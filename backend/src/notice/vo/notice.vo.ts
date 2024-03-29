@@ -6,7 +6,6 @@ export class NoticeItemVo {
   service_id: number[];
   title: string;
   content: string;
-  content_html: string;
   creator: string;
   updator: string;
   notice_type: string;

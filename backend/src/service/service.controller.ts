@@ -5,6 +5,7 @@ import {
   Body,
   Param,
   Delete,
+  Headers,
   ParseIntPipe,
   Put,
 } from '@nestjs/common';
@@ -18,8 +19,14 @@ export class ServiceController {
   constructor(private readonly serviceService: ServiceService) {}
 
   @Post('create')
-  async create(@Body(MyValidatePipe) createServiceDto: CreateServiceDto) {
-    const service = await this.serviceService.create(createServiceDto);
+  async create(
+    @Body(MyValidatePipe) createServiceDto: CreateServiceDto,
+    @Headers('authorization') authorization: string,
+  ) {
+    const service = await this.serviceService.create(
+      createServiceDto,
+      authorization,
+    );
     return service;
   }
 

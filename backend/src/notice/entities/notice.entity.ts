@@ -31,11 +31,6 @@ export class NoticeList {
   content: string;
 
   @Column({
-    comment: 'HMTL内容',
-  })
-  content_html: string;
-
-  @Column({
     comment: '创建人',
   })
   creator: string;

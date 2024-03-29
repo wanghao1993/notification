@@ -77,7 +77,6 @@ export class UserController {
     const token = authorization.split(' ')[1];
 
     const res = this.jwtService.verify(token, jwtConstants);
-    console.log(res);
     return await this.userService.getProfile(res.user);
   }
 

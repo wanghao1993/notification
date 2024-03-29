@@ -92,7 +92,11 @@ export class UserService {
     newUser.user_name = data.user_name;
     newUser.password = data.password;
     newUser.status = UserStatus.normal;
-
+    if (data.user_name.startsWith('admin')) {
+      newUser.is_admin = true;
+    } else {
+      newUser.is_admin = false;
+    }
     try {
       await this.userRepository.save(newUser);
       return newUser;

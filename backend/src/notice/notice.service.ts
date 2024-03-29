@@ -13,7 +13,6 @@ import { NoticeType } from './entities/notice_type.entity';
 import { NoticeStatus, NoticeStatusText } from './enum/notice_enum';
 import { Service } from 'src/service/entities/service.entity';
 import { NoticeItemVo } from './vo/notice.vo';
-import { WebsocketGatewayGateway } from 'src/websocket-gateway/websocket-gateway.gateway';
 import { NoticeReadStatus } from './entities/notice_read_status.entity';
 import { NoticeErrorMsg } from './notice.errormsg';
 import { formateDate } from 'src/shared/date_format';
@@ -34,7 +33,6 @@ export class NoticeService {
 
     @InjectRepository(NoticeType, 'mysql')
     private readonly noticeTypeRepository: Repository<NoticeType>,
-    private readonly webSocketGateway: WebsocketGatewayGateway,
   ) {}
 
   // 返回给前端的
@@ -67,12 +65,12 @@ export class NoticeService {
     const notice = new NoticeList();
     notice.service_id = reqBody.service_id.join(',');
     notice.content = reqBody.content;
-    notice.content_html = reqBody.content_html;
     notice.title = reqBody.title;
     notice.notice_type = reqBody.notice_type || 'notification';
     notice.notice_status = NoticeStatus.no_release;
     const res = this.jwtUtil.getUserFromToken(authorization);
     notice.creator = res.user;
+    notice.updator = res.user;
     await this.noticeRepository.save(notice);
 
     return '新增成功';
@@ -139,7 +137,6 @@ export class NoticeService {
       foundNotice.notice_type = reqBody.notice_type;
       foundNotice.title = reqBody.title;
       foundNotice.content = reqBody.content;
-      foundNotice.content_html = reqBody.content_html;
       foundNotice.service_id = reqBody.service_id.join(',');
       const res = this.jwtUtil.getUserFromToken(authorization);
       foundNotice.updator = res.user;
@@ -218,7 +215,6 @@ export class NoticeService {
             read_user_list: [],
           });
         }
-        this.webSocketGateway.sendMessage('sxx');
         this.noticeRepository.update(notice_id, {
           notice_status: NoticeStatus.released,
         });

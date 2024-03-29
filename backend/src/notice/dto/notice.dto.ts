@@ -20,25 +20,12 @@ export class CreateNoticeDto {
   title: string;
 
   @IsNotEmpty({
-    message: '创建人不可为空',
-  })
-  creator: string;
-
-  @IsNotEmpty({
     message: '通知内容不可为空',
   })
   @IsString({
     message: '内容类型错误',
   })
   content: string;
-
-  @IsNotEmpty({
-    message: '通知内容不可为空',
-  })
-  @IsString({
-    message: 'htmlcontent',
-  })
-  content_html: string;
 }
 
 export class updateNoticeDto extends CreateNoticeDto {

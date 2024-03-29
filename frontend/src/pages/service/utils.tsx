@@ -15,7 +15,8 @@ import {
   getServiceById,
   updateService,
 } from '@/server/service';
-
+import React from 'react';
+import { getUserListApi } from '@/server/user';
 export function UseServiceUtils(data?: { closeCallBack: () => void }) {
   let serviceId = 0;
   const formRef = useRef<FormInstance>();
@@ -24,12 +25,17 @@ export function UseServiceUtils(data?: { closeCallBack: () => void }) {
   const [userList, setUserList] = useState([]);
 
   const getUserList = () => {
-    setUserList([
-      {
-        label: '汪浩',
-        value: 'isaac.wang1',
-      },
-    ]);
+    getUserListApi({
+      page: 1,
+      pageSize: 10000,
+    }).then((res) => {
+      setUserList(
+        res.data.list.map((item) => ({
+          label: item.user_name,
+          value: item.user_name,
+        }))
+      );
+    });
   };
 
   useEffect(() => {
@@ -68,7 +74,7 @@ export function UseServiceUtils(data?: { closeCallBack: () => void }) {
         ref={formRef}
         initialValues={{
           service_status: serviceStatus.normal,
-          administrator: ['isaac.wang1'],
+          administrator: [],
         }}
       >
         <FormItem

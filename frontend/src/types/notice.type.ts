@@ -15,7 +15,6 @@ export namespace NoticeType {
     notice_type: string;
     title: string;
     content: string;
-    content_html: string;
   }
 
   export interface UpdateNotice extends CreateNotice {

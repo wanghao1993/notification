@@ -1,4 +1,18 @@
 import { Column, Entity, PrimaryColumn } from 'typeorm';
+export const InitNoticeData = [
+  {
+    notice_type: '1',
+    notice_type_label: '跑马灯',
+  },
+  {
+    notice_type: '2',
+    notice_type_label: 'Modal弹窗',
+  },
+  {
+    notice_type: '3',
+    notice_type_label: '通知',
+  },
+];
 
 @Entity({
   name: 't_notice_type',
