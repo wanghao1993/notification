@@ -17,6 +17,7 @@ import useStorage from './utils/useStorage';
 import './mock';
 import 'virtual:uno.css';
 import { getProfile } from './server/user';
+import { noticePushApi } from './server/notice';
 
 const store = createStore(rootReducer);
 
@@ -57,6 +58,16 @@ function Index() {
   useEffect(() => {
     if (checkLogin()) {
       fetchUserInfo();
+
+      // const eventSource = new EventSource(
+      //   `http://localhost:3000/notice/notice_push`
+      // );
+      // eventSource.onmessage = ({ data }) => {
+      //   console.log(data);
+      // };
+      noticePushApi().then((res) => {
+        console.log(res, 'res');
+      });
     } else if (window.location.pathname.replace(/\//g, '') !== 'login') {
       window.location.pathname = '/login';
     }

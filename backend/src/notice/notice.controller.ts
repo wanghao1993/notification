@@ -9,6 +9,7 @@ import {
   Query,
   Param,
   Headers,
+  Sse,
 } from '@nestjs/common';
 import {
   ChangeReadStatusDto,
@@ -18,6 +19,8 @@ import {
 } from './dto/notice.dto';
 import { NoticeService } from './notice.service';
 import { MyValidatePipe } from 'src/my-validate-pipe/my-validate.pipe';
+import { NoticeItemVo } from './vo/notice.vo';
+import { NoticeList } from './entities/notice.entity';
 
 @Controller('notice')
 export class NoticeController {
@@ -88,5 +91,11 @@ export class NoticeController {
     @Body(MyValidatePipe) changeReadStatusDto: ChangeReadStatusDto,
   ) {
     return this.noticeService.changeReadStatus(changeReadStatusDto);
+  }
+
+  // 推送通知
+  @Sse('notice_push')
+  noticePush() {
+    return this.noticeService.pushNotice();
   }
 }

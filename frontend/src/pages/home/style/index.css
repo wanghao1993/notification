@@ -1,0 +1,23 @@
+@keyframes marquee {
+  from { transform: translateX(100%); }
+  to { transform: translateX(-100%); }
+}
+
+.marquee {
+  background: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70vw;
+  background-color: yellow;
+  overflow: hidden;
+  z-index: 20000;
+}
+
+.marquee-text {
+  animation: marquee 10s linear infinite;
+  display: block;
+}

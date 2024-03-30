@@ -17,6 +17,8 @@ import { NoticeReadStatus } from './entities/notice_read_status.entity';
 import { NoticeErrorMsg } from './notice.errormsg';
 import { formateDate } from 'src/shared/date_format';
 import { JwtUtil } from 'src/utils';
+import { Observable } from 'rxjs';
+import { sseEvent } from 'src/sse';
 
 @Injectable()
 export class NoticeService {
@@ -159,9 +161,7 @@ export class NoticeService {
     if (foundNotice) {
       await this.noticeRepository.remove(foundNotice);
 
-      return {
-        msg: '删除成功',
-      };
+      return;
     } else {
       throw new HttpException(NoticeErrorMsg.NO_EXIST, HttpStatus.OK);
     }
@@ -176,6 +176,22 @@ export class NoticeService {
     };
   }
 
+  // 推送通知
+  pushNotice() {
+    return new Observable((observer) => {
+      sseEvent.getEvent().on('notice_push', async (data) => {
+        Promise.all([
+          this.getNoticeById(data.id),
+          this.ServiceRep.findBy({
+            service_id: In([...new Set(data.service_id)]),
+          }),
+        ]).then((res) => {
+          res[0]['services'] = res[1];
+          observer.next(JSON.stringify(res[0]));
+        });
+      });
+    });
+  }
   // 通过id获取通知
 
   async getNoticeById(id: number) {
@@ -214,14 +230,13 @@ export class NoticeService {
             notice_id,
             read_user_list: [],
           });
+          await this.NoticeReadRep.save(noticeRead);
         }
-        this.noticeRepository.update(notice_id, {
+        const res = await this.noticeRepository.update(notice_id, {
           notice_status: NoticeStatus.released,
         });
-
-        await this.NoticeReadRep.save(noticeRead);
-
-        return noticeRead;
+        sseEvent.getEvent().emit('notice_push', noticeDetail);
+        return res;
       } else {
         throw new HttpException(NoticeErrorMsg.NO_EXIST, HttpStatus.OK);
       }

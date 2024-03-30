@@ -23,7 +23,7 @@ export class TransformInterceptor<T>
         return {
           data,
           code: ResCode.success,
-          message: '请求成功',
+          message: 'success',
         };
       }),
     );

@@ -1,0 +1,14 @@
+{
+  "name": "fe-notice",
+  "version": "1.0.0",
+  "description": "通知到页面上，可以选择跑马灯，modal，notification",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "notice"
+  ],
+  "author": "wanghao1993",
+  "license": "ISC"
+}

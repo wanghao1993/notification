@@ -21,6 +21,7 @@ import {
 } from '@arco-design/web-react/icon';
 import React from 'react';
 import { NoticeType } from './../../types/notice.type';
+import './style/index.css';
 function Home() {
   const columns = [
     {
@@ -208,9 +209,19 @@ function Home() {
   const [modal] = Modal.useModal();
 
   const preview = (notice: NoticeType.NoticeItem) => {
-    if (notice.notice_type === 'notification') {
-    } else if (notice.notice_type === 'loop_run') {
-    } else if (notice.notice_type === 'modal') {
+    if (notice.notice_type === '1') {
+      const fr = document.createDocumentFragment();
+      const div = document.createElement('div');
+      div.setAttribute('class', 'marquee');
+      const txtdiv = document.createElement('span');
+      txtdiv.setAttribute('class', 'marquee-text');
+      txtdiv.innerHTML = notice.content;
+
+      div.appendChild(txtdiv);
+      fr.appendChild(div);
+      document.body.appendChild(fr);
+    } else if (notice.notice_type === '3') {
+    } else if (notice.notice_type === '2') {
       modal.confirm({
         title: notice.title,
         content: 111,

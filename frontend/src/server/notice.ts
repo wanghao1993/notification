@@ -48,6 +48,11 @@ export const sendNoticeApi = (id: number) => {
   );
 };
 
+// 通知push
+export const noticePushApi = () => {
+  return request.get(`/notice/notice_push`);
+};
+
 // 撤销通知
 export const revokeNoticeApi = (id: number) => {
   return request.put<ListResType<NoticeType.NoticeItem>>(

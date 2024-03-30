@@ -164,7 +164,7 @@ export default function NoticeModal(props: {
               }
             >
               {(values) => {
-                return values.notice_type === 'loop_run' ? (
+                return values.notice_type === '1' ? (
                   <FormItem
                     label="通知内容"
                     field="content"
